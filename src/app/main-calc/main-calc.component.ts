@@ -7,15 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainCalcComponent {
 
-    private isCalculated = false;
-    private clockInTime: Date;
-    private rawClockInTime = '';
-    private normalWorkingTime = new Date();
-    private eightHourWorkingTime = new Date();
-    private tenHourWorkingTime = new Date();
-    private normalWorkingLabel: string;
-    private eightHourWorkingLabel: string;
-    private tenHourLabel: string;
+    isCalculated = false;
+    clockInTime: Date;
+    rawClockInTime = '';
+    normalWorkingTime = new Date();
+    eightHourWorkingTime = new Date();
+    tenHourWorkingTime = new Date();
+    normalWorkingLabel: string;
+    eightHourWorkingLabel: string;
+    tenHourLabel: string;
 
     constructor() { }
 
