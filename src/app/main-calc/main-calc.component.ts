@@ -19,6 +19,9 @@ export class MainCalcComponent {
 
     constructor() { }
 
+    public handleKeyEnterOnRawTimeInput(): void {
+        this.calculateTimes();
+    }
 
     public calculateTimes() {
         if (this.rawClockInTime === '') {

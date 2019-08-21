@@ -1,12 +1,14 @@
 <div flexLayout="column"
      fxLayoutAlign="center center">
-    <mat-card style="width: 200px; height: 325px; padding: 40px">
+    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
         <div fxLayout="row"
              fxLayoutAlign="center">
             <mat-form-field>
                 <input matInput
                        type="time"
+                       (keydown.enter)="handleKeyEnterOnRawTimeInput()"
                        [(ngModel)]="rawClockInTime"
+                       style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
             </mat-form-field>
         </div>
@@ -17,7 +19,7 @@
                     (click)="calculateTimes()">Berechne</button>
         </div>
 
-        <mat-divider style="position: relative; margin: 24px 0px;"></mat-divider>
+        <mat-divider style="position: relative; margin: 26px 0px;"></mat-divider>
 
         <div *ngIf="isCalculated"
              fxLayoutAlign="center center"
@@ -40,7 +42,8 @@
                 <div fxLayout="column">
                     <label fxLayoutAlign="center">10h erreicht um:</label>
                     <label fxLayoutAlign="center"
-                           class="mat-h2">{{ tenHourLabel }}</label>
+                           class="mat-h2"
+                           style="color: #C00; margin-bottom: 0">{{ tenHourLabel }}</label>
                 </div>
             </div>
         </div>
