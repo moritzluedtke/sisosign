@@ -73,7 +73,7 @@ export class MainCalcComponent {
         this.berechneSollarbeitszeiten();
     }
 
-    public berechneSollarbeitszeiten() {
+    private berechneSollarbeitszeiten() {
         if (this.rawEinstempelzeit === '') {
             return;
         }
@@ -94,7 +94,7 @@ export class MainCalcComponent {
         this.isSollarbeitszeitBerechnet = true;
     }
 
-    public berechneNettoArbeitszeit() {
+    private berechneNettoArbeitszeit() {
         if (this.rawEinstempelzeit === '' || this.rawAusstempelzeit === '') {
             return;
         }
@@ -114,11 +114,11 @@ export class MainCalcComponent {
     }
 
 
-    private handleKeyEnterOnEinstempelzeitInput() {
+    public handleKeyEnterOnEinstempelzeitInput() {
         this.berechneNettoArbeitszeit();
     }
 
-    private handleKeyEnterOnAusstempelzeitInput() {
+    public handleKeyEnterOnAusstempelzeitInput() {
         this.berechneNettoArbeitszeit();
     }
 }
