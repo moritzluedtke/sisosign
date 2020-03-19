@@ -1,34 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { interval } from 'rxjs';
 
 @Component({
     selector: 'app-main-calc',
     templateUrl: './main-calc.component.html',
     styleUrls: ['./main-calc.component.css']
 })
-export class MainCalcComponent {
+export class MainCalcComponent implements OnInit {
 
     private readonly TIME_SPLIT_SEPERATOR = ':00 GMT';
     private readonly LUNCH_BREAK_IN_MINUTES = 45;
+    private readonly EVERY_TWENTY_SECONDS = 20_000;
 
     isSollarbeitszeitBerechnet = false;
     isNettoArbeitszeitBerechnet = false;
+    isJetztOptionActivated = false;
 
-    rawEinstempelzeitTime: Date;
-    rawAusstempelzeitTime: Date;
+    einstempelzeitTime: Date;
+    ausstempelzeitTime: Date;
+    einstempelzeitFromInput = '';
+    ausstempelzeitFromInput = '';
 
-    rawEinstempelzeit = '';
-    rawAusstempelzeit = '';
-
-    sixHour45MinutesWorkingTime = new Date();
+    sixHourWorkingTime = new Date();
     normalWorkingTime = new Date();
     eightHourWorkingTime = new Date();
     tenHourWorkingTime = new Date();
 
-    sixHour45MinutesWorkingLabel: string;
+    sixHourWorkingLabel: string;
     regelArbeitszeitLabel: string;
     eightHourWorkingLabel: string;
     tenHourLabel: string;
-
     nettoArbeitszeitLabel: string;
 
     constructor() {
@@ -56,33 +57,46 @@ export class MainCalcComponent {
     }
 
     private static getTimeDifference(fromTime: Date, toTime: Date): Date {
-        console.log(fromTime);
-        console.log(toTime);
-
         const differenceAsDate = new Date(toTime.getTime() - fromTime.getTime());
         const newDate = new Date();
 
         newDate.setHours(differenceAsDate.getTime() / (1000 * 60 * 60));
         newDate.setMinutes((differenceAsDate.getTime() / (1000 * 60)) % 60);
+
+        // only here, to set seconds to zero in order to split the label based on that
         newDate.setSeconds(0);
 
         return newDate;
     }
 
+    ngOnInit(): void {
+        interval(this.EVERY_TWENTY_SECONDS).subscribe(x => {
+            if (this.isJetztOptionActivated) {
+                this.setRawAusstempelzeitTimeToCurrentTime();
+            }
+        });
+    }
+
+    private setRawAusstempelzeitTimeToCurrentTime(): void {
+        this.ausstempelzeitTime = new Date();
+        this.ausstempelzeitFromInput =
+            this.ausstempelzeitTime.getHours() + ':' + this.ausstempelzeitTime.getMinutes();
+    }
+
     private berechneSollarbeitszeiten() {
-        if (this.rawEinstempelzeit === '') {
+        if (this.einstempelzeitFromInput === '') {
             return;
         }
 
-        this.rawEinstempelzeitTime = MainCalcComponent.parseRawTime(this.rawEinstempelzeit);
+        this.einstempelzeitTime = MainCalcComponent.parseRawTime(this.einstempelzeitFromInput);
 
-        MainCalcComponent.addHoursAndMinutesTo(this.sixHour45MinutesWorkingTime, 6, 45, this.rawEinstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(this.normalWorkingTime, 8, 21, this.rawEinstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(this.eightHourWorkingTime, 8, 45, this.rawEinstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(this.tenHourWorkingTime, 10, 45, this.rawEinstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(this.sixHourWorkingTime, 6, 45, this.einstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(this.normalWorkingTime, 8, 21, this.einstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(this.eightHourWorkingTime, 8, 45, this.einstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(this.tenHourWorkingTime, 10, 45, this.einstempelzeitTime);
 
-        this.sixHour45MinutesWorkingLabel =
-            this.sixHour45MinutesWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
+        this.sixHourWorkingLabel =
+            this.sixHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
         this.regelArbeitszeitLabel = this.normalWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
         this.eightHourWorkingLabel = this.eightHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
         this.tenHourLabel = this.tenHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
@@ -91,16 +105,16 @@ export class MainCalcComponent {
     }
 
     private berechneNettoArbeitszeit() {
-        if (this.rawEinstempelzeit === '' || this.rawAusstempelzeit === '') {
+        if (this.einstempelzeitFromInput === '' || this.ausstempelzeitFromInput === '') {
             return;
         }
 
-        this.rawEinstempelzeitTime = MainCalcComponent.parseRawTime(this.rawEinstempelzeit);
-        this.rawAusstempelzeitTime = MainCalcComponent.parseRawTime(this.rawAusstempelzeit);
+        this.einstempelzeitTime = MainCalcComponent.parseRawTime(this.einstempelzeitFromInput);
+        this.ausstempelzeitTime = MainCalcComponent.parseRawTime(this.ausstempelzeitFromInput);
 
         const nettoArbeitszeit = MainCalcComponent.getTimeDifference(
-            this.rawEinstempelzeitTime,
-            this.rawAusstempelzeitTime);
+            this.einstempelzeitTime,
+            this.ausstempelzeitTime);
 
         nettoArbeitszeit.setMinutes(nettoArbeitszeit.getMinutes() - this.LUNCH_BREAK_IN_MINUTES);
 
@@ -109,23 +123,27 @@ export class MainCalcComponent {
         this.isNettoArbeitszeitBerechnet = true;
     }
 
+    public handleJetztOptionClick(): void {
+        this.setRawAusstempelzeitTimeToCurrentTime();
+    }
+
     public handleKeyEnterOnSollarbeitszeitenInput(): void {
         this.berechneSollarbeitszeiten();
     }
 
-    public handleBerechneSollarbeitszeitenClick() {
+    public handleBerechneSollarbeitszeitenClick(): void {
         this.berechneSollarbeitszeiten();
     }
 
-    public handleBerechneNettoArbeitszeitClick() {
+    public handleBerechneNettoArbeitszeitClick(): void {
         this.berechneNettoArbeitszeit();
     }
 
-    public handleKeyEnterOnEinstempelzeitInput() {
+    public handleKeyEnterOnEinstempelzeitInput(): void {
         this.berechneNettoArbeitszeit();
     }
 
-    public handleKeyEnterOnAusstempelzeitInput() {
+    public handleKeyEnterOnAusstempelzeitInput(): void {
         this.berechneNettoArbeitszeit();
     }
 }

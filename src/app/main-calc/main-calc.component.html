@@ -9,7 +9,7 @@
                 <input matInput
                        type="time"
                        (keydown.enter)="handleKeyEnterOnSollarbeitszeitenInput()"
-                       [(ngModel)]="rawEinstempelzeit"
+                       [(ngModel)]="einstempelzeitFromInput"
                        style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
             </mat-form-field>
@@ -23,7 +23,7 @@
             </button>
         </div>
 
-        <mat-divider style="position: relative; margin: 26px 0px;"></mat-divider>
+        <mat-divider style="position: relative; margin: 26px 0;"></mat-divider>
 
         <div *ngIf="isSollarbeitszeitBerechnet"
              fxLayoutAlign="center center"
@@ -32,7 +32,7 @@
                 <div fxLayout="column">
                     <label fxLayoutAlign="center">6h erreicht um:</label>
                     <label fxLayoutAlign="center"
-                           class="mat-h2">{{ sixHour45MinutesWorkingLabel }}</label>
+                           class="mat-h2">{{ sixHourWorkingLabel }}</label>
                 </div>
             </div>
             <div fxLayout="row">
@@ -69,7 +69,7 @@
                 <input matInput
                        type="time"
                        (keydown.enter)="handleKeyEnterOnEinstempelzeitInput()"
-                       [(ngModel)]="rawEinstempelzeit"
+                       [(ngModel)]="einstempelzeitFromInput"
                        style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
             </mat-form-field>
@@ -80,15 +80,22 @@
                 <input matInput
                        type="time"
                        (keydown.enter)="handleKeyEnterOnAusstempelzeitInput()"
-                       [(ngModel)]="rawAusstempelzeit"
+                       [(ngModel)]="ausstempelzeitFromInput"
+                       [disabled]="isJetztOptionActivated"
                        style="font-size: 1.4em"
                        placeholder="Ausgestempelt um">
             </mat-form-field>
         </div>
         <div fxLayout="row"
+             fxLayoutAlign="center"
+             style="top: -12px; position: relative">
+            <mat-checkbox [(ngModel)]="isJetztOptionActivated" (click)="handleJetztOptionClick()">Jetzt?</mat-checkbox>
+        </div>
+        <div fxLayout="row"
              fxLayoutAlign="center">
             <button mat-raised-button
                     color="primary"
+                    style="margin-top: 8px;"
                     (click)="handleBerechneNettoArbeitszeitClick()">
                 Berechne
             </button>
