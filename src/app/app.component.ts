@@ -9,7 +9,7 @@ const { version: appVersion } = require('../../package.json');
 })
 export class AppComponent {
   readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
-  private appVersion;
+  appVersion;
 
   constructor() {
     this.appVersion = appVersion;
