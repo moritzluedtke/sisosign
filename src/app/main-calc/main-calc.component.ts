@@ -79,8 +79,11 @@ export class MainCalcComponent implements OnInit {
 
     private setRawAusstempelzeitTimeToCurrentTime(): void {
         this.ausstempelzeitTime = new Date();
-        this.ausstempelzeitFromInput =
-            this.ausstempelzeitTime.getHours() + ':' + this.ausstempelzeitTime.getMinutes();
+
+        const minutes = this.ausstempelzeitTime.getMinutes().toString();
+        const minutesWithLeadingZero = minutes.length === 1 ? '0' + minutes : minutes;
+
+        this.ausstempelzeitFromInput = this.ausstempelzeitTime.getHours() + ':' + minutesWithLeadingZero;
     }
 
     private berechneSollarbeitszeiten() {

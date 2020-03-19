@@ -2,4 +2,4 @@
 
 Developed by Moritz Lüdtke
 
-Current Version in Production: **v1.2**
+Enjoy it in it's full glory [right here](https://sisosign.herokuapp.com/).
