@@ -1,26 +1,19 @@
-<div style="height: 96vh">
-    <label fxLayoutAlign="center"
-           class="mat-display-2"
-           style="font-weight: bold;
-           margin: 24px 0 12px 0;
-           color: whitesmoke;
-           letter-spacing: 2px;
-           text-shadow: 3px 4px 15px rgba(0, 0, 0, 0.8);">
-           Should I Stay Or Should I Go (now)
+<div fxLayout="column">
+    <div fxLayout="column" fxLayoutAlign="center center">
+        <label
+                class="mat-display-2 ml-h1">
+            SISOSIGN
         </label>
-    <label fxLayoutAlign="center"
-           class="mat-h4"
-           style="margin-top: 0; margin-bottom: 100px; color: whitesmoke">
-           Created by: Moritz Lüdtke
+        <label class="mat-h4 ml-h4">
+            Created by: Moritz Lüdtke
         </label>
+    </div>
 
     <app-main-calc></app-main-calc>
 
-    <!-- <div fxLayoutAlign="center end">
-        <a class="mat-h4"
-           style="font-size: 0.8em; position: absolute; bottom: 0px; color: orange"
-           href="https://www.freepik.com">
-            Designed by pikisuperstar / Freepik
-        </a>
-    </div> -->
+    <div class="fixed-footer-text">
+        <label class="mat-h4 ml-h4">
+            v{{ appVersion }}
+        </label>
+    </div>
 </div>
