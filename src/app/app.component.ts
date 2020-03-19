@@ -8,6 +8,7 @@ const { version: appVersion } = require('../../package.json');
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
   private appVersion;
 
   constructor() {

@@ -1,7 +1,6 @@
 <div fxLayout="column">
     <div fxLayout="column" fxLayoutAlign="center center">
-        <label
-                class="mat-display-2 ml-h1">
+        <label class="mat-display-2 ml-h1">
             SISOSIGN
         </label>
         <label class="mat-h4 ml-h4">
@@ -11,9 +10,13 @@
 
     <app-main-calc></app-main-calc>
 
-    <div class="fixed-footer-text">
-        <label class="mat-h4 ml-h4">
+    <div class="fixed-footer">
+        <label class="mat-h4 footer-text">
             v{{ appVersion }}
         </label>
+
+        <a href="{{RELEASE_NOTE_URL}}" style="right: 10px; position: fixed" class="mat-h4 hover-link footer-text">
+            Release Notes
+        </a>
     </div>
 </div>

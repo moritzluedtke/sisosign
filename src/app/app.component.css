@@ -14,9 +14,20 @@
     text-shadow: 3px 4px 6px rgba(0, 0, 0, 0.6);
 }
 
-.fixed-footer-text {
+.footer-text {
+    color: whitesmoke;
+    font-size: 20px;
+    text-shadow: 3px 4px 6px rgba(0, 0, 0, 0.6);
+}
+
+.fixed-footer {
     position: fixed;
     bottom: 0;
+    margin-bottom: 8px;
     text-align: center;
     width: 100vw;
+}
+
+.hover-link:hover {
+    color: #63d4ff;
 }
