@@ -82,8 +82,10 @@ export class MainCalcComponent implements OnInit {
 
         const minutes = this.ausstempelzeitTime.getMinutes().toString();
         const minutesWithLeadingZero = minutes.length === 1 ? '0' + minutes : minutes;
+        const hours = this.ausstempelzeitTime.getHours().toString();
+        const hoursWithLeadingZero = hours.length === 1 ? '0' + hours : hours;
 
-        this.ausstempelzeitFromInput = this.ausstempelzeitTime.getHours() + ':' + minutesWithLeadingZero;
+        this.ausstempelzeitFromInput = hoursWithLeadingZero + ':' + minutesWithLeadingZero;
     }
 
     private berechneSollarbeitszeiten() {
