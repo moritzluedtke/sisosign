@@ -72,12 +72,13 @@ export class MainCalcComponent implements OnInit {
     ngOnInit(): void {
         interval(this.EVERY_TWENTY_SECONDS).subscribe(x => {
             if (this.isJetztOptionActivated) {
-                this.setRawAusstempelzeitTimeToCurrentTime();
+                this.setAusstempelzeitFromInputToNow();
+                this.berechneNettoArbeitszeit();
             }
         });
     }
 
-    private setRawAusstempelzeitTimeToCurrentTime(): void {
+    private setAusstempelzeitFromInputToNow(): void {
         this.ausstempelzeitTime = new Date();
 
         const minutes = this.ausstempelzeitTime.getMinutes().toString();
@@ -100,8 +101,7 @@ export class MainCalcComponent implements OnInit {
         MainCalcComponent.addHoursAndMinutesTo(this.eightHourWorkingTime, 8, 45, this.einstempelzeitTime);
         MainCalcComponent.addHoursAndMinutesTo(this.tenHourWorkingTime, 10, 45, this.einstempelzeitTime);
 
-        this.sixHourWorkingLabel =
-            this.sixHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
+        this.sixHourWorkingLabel = this.sixHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
         this.regelArbeitszeitLabel = this.normalWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
         this.eightHourWorkingLabel = this.eightHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
         this.tenHourLabel = this.tenHourWorkingTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
@@ -117,9 +117,7 @@ export class MainCalcComponent implements OnInit {
         this.einstempelzeitTime = MainCalcComponent.parseRawTime(this.einstempelzeitFromInput);
         this.ausstempelzeitTime = MainCalcComponent.parseRawTime(this.ausstempelzeitFromInput);
 
-        const nettoArbeitszeit = MainCalcComponent.getTimeDifference(
-            this.einstempelzeitTime,
-            this.ausstempelzeitTime);
+        const nettoArbeitszeit = MainCalcComponent.getTimeDifference(this.einstempelzeitTime, this.ausstempelzeitTime);
 
         nettoArbeitszeit.setMinutes(nettoArbeitszeit.getMinutes() - this.LUNCH_BREAK_IN_MINUTES);
 
@@ -128,8 +126,11 @@ export class MainCalcComponent implements OnInit {
         this.isNettoArbeitszeitBerechnet = true;
     }
 
-    public handleJetztOptionClick(): void {
-        this.setRawAusstempelzeitTimeToCurrentTime();
+    public handleJetztOption(): void {
+        if (!this.isJetztOptionActivated) {
+            this.setAusstempelzeitFromInputToNow();
+            this.berechneNettoArbeitszeit();
+        }
     }
 
     public handleKeyEnterOnSollarbeitszeitenInput(): void {
@@ -140,7 +141,7 @@ export class MainCalcComponent implements OnInit {
         this.berechneSollarbeitszeiten();
     }
 
-    public handleBerechneNettoArbeitszeitClick(): void {
+    public handleBerechneNettoarbeitszeitClick(): void {
         this.berechneNettoArbeitszeit();
     }
 
