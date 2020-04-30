@@ -8,6 +8,8 @@ import { interval } from 'rxjs';
 })
 export class MainCalcComponent implements OnInit {
 
+    private readonly NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP =
+        'Du hast vermutlich noch weniger als 45 Minuten (Länge der Mittagspause) gearbeitet.';
     private readonly TIME_SPLIT_SEPERATOR = ':00 GMT';
     private readonly LUNCH_BREAK_IN_MINUTES = 45;
     private readonly TWENTY_SECONDS = 20_000;
@@ -15,6 +17,7 @@ export class MainCalcComponent implements OnInit {
     isSollarbeitszeitBerechnet = false;
     isNettoArbeitszeitBerechnet = false;
     isJetztOptionActivated = false;
+    showHelpForZeroNettoarbeitszeit = false;
 
     einstempelzeitTime: Date;
     ausstempelzeitTime: Date;
@@ -119,11 +122,21 @@ export class MainCalcComponent implements OnInit {
 
         const nettoArbeitszeit = MainCalcComponent.getTimeDifference(this.einstempelzeitTime, this.ausstempelzeitTime);
 
-        nettoArbeitszeit.setMinutes(nettoArbeitszeit.getMinutes() - this.LUNCH_BREAK_IN_MINUTES);
+        if (nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() <= this.LUNCH_BREAK_IN_MINUTES) {
+            nettoArbeitszeit.setMinutes(0);
+            this.showHelpForZeroNettoarbeitszeit = true;
+        } else {
+            nettoArbeitszeit.setMinutes(nettoArbeitszeit.getMinutes() - this.LUNCH_BREAK_IN_MINUTES);
+            this.showHelpForZeroNettoarbeitszeit = false;
+        }
 
-        this.nettoArbeitszeitLabel = nettoArbeitszeit.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
+        this.setNettoArbeitszeitLabelTo(nettoArbeitszeit);
 
         this.isNettoArbeitszeitBerechnet = true;
+    }
+
+    setNettoArbeitszeitLabelTo(newTime: Date): void {
+        this.nettoArbeitszeitLabel = newTime.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
     }
 
     public handleJetztOption(): void {
