@@ -8,6 +8,7 @@ import {
 } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatFormFieldModule,
         MatInputModule,
         MatDividerModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatTooltipModule
     ],
     exports: [
         MatButtonModule,
@@ -26,7 +28,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatFormFieldModule,
         MatInputModule,
         MatDividerModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatTooltipModule
     ],
 })
 export class CustomMaterialModule {
