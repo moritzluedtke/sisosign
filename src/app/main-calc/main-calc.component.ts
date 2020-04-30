@@ -8,11 +8,11 @@ import { interval } from 'rxjs';
 })
 export class MainCalcComponent implements OnInit {
 
-    private readonly NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP =
+    readonly NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP =
         'Du hast vermutlich noch weniger als 45 Minuten (Länge der Mittagspause) gearbeitet.';
-    private readonly TIME_SPLIT_SEPERATOR = ':00 GMT';
-    private readonly LUNCH_BREAK_IN_MINUTES = 45;
-    private readonly TWENTY_SECONDS = 20_000;
+    readonly TIME_SPLIT_SEPERATOR = ':00 GMT';
+    readonly LUNCH_BREAK_IN_MINUTES = 45;
+    readonly TWENTY_SECONDS = 20_000;
 
     isSollarbeitszeitBerechnet = false;
     isNettoArbeitszeitBerechnet = false;
