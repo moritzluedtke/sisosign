@@ -10,7 +10,7 @@ export class MainCalcComponent implements OnInit {
 
     private readonly TIME_SPLIT_SEPERATOR = ':00 GMT';
     private readonly LUNCH_BREAK_IN_MINUTES = 45;
-    private readonly EVERY_TWENTY_SECONDS = 20_000;
+    private readonly TWENTY_SECONDS = 20_000;
 
     isSollarbeitszeitBerechnet = false;
     isNettoArbeitszeitBerechnet = false;
@@ -70,7 +70,7 @@ export class MainCalcComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        interval(this.EVERY_TWENTY_SECONDS).subscribe(x => {
+        interval(this.TWENTY_SECONDS).subscribe(x => {
             if (this.isJetztOptionActivated) {
                 this.setAusstempelzeitFromInputToNow();
                 this.berechneNettoArbeitszeit();
