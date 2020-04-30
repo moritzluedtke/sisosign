@@ -146,8 +146,9 @@ export class MainCalcComponent implements OnInit {
         }
     }
 
-    public handleKeyEnterOnSollarbeitszeitenInput(): void {
+    public handleUserInputKeyPress(): void {
         this.berechneSollarbeitszeiten();
+        this.berechneNettoArbeitszeit();
     }
 
     public handleBerechneSollarbeitszeitenClick(): void {
