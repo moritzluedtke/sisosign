@@ -4,26 +4,16 @@
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Sollarbeitszeit</h2>
 
         <div fxLayout="row"
-             fxLayoutAlign="center">
+             fxLayoutAlign="center" style="margin: 16px 0;">
             <mat-form-field>
                 <input matInput
                        type="time"
-                       (keydown.enter)="handleKeyEnterOnSollarbeitszeitenInput()"
+                       (input)="handleUserInputKeyPress()"
                        [(ngModel)]="einstempelzeitFromInput"
                        style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
             </mat-form-field>
         </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <button mat-raised-button
-                    color="primary"
-                    (click)="handleBerechneSollarbeitszeitenClick()">
-                Berechne
-            </button>
-        </div>
-
-        <mat-divider style="position: relative; margin: 26px 0;"></mat-divider>
 
         <div *ngIf="isSollarbeitszeitBerechnet"
              fxLayoutAlign="center center"
@@ -45,8 +35,9 @@
             <div fxLayout="row">
                 <div fxLayout="column">
                     <label fxLayoutAlign="center">8h erreicht um:</label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ eightHourWorkingLabel }}</label>
+                    <label fxLayoutAlign="center"class="mat-h2">
+                        {{ eightHourWorkingLabel }}
+                    </label>
                 </div>
             </div>
             <div fxLayout="row">
@@ -54,7 +45,9 @@
                     <label fxLayoutAlign="center">10h erreicht um:</label>
                     <label fxLayoutAlign="center"
                            class="mat-h2"
-                           style="color: #F00; margin-bottom: 0">{{ tenHourLabel }}</label>
+                           style="color: #F00; margin-bottom: 0">
+                        {{ tenHourLabel }}
+                    </label>
                 </div>
             </div>
         </div>
@@ -68,7 +61,7 @@
             <mat-form-field>
                 <input matInput
                        type="time"
-                       (keydown.enter)="handleKeyEnterOnEinstempelzeitInput()"
+                       (input)="handleUserInputKeyPress()"
                        [(ngModel)]="einstempelzeitFromInput"
                        style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
@@ -79,7 +72,7 @@
             <mat-form-field>
                 <input matInput
                        type="time"
-                       (keydown.enter)="handleKeyEnterOnAusstempelzeitInput()"
+                       (input)="handleUserInputKeyPress()"
                        [(ngModel)]="ausstempelzeitFromInput"
                        [disabled]="isJetztOptionActivated"
                        style="font-size: 1.4em"
@@ -91,26 +84,18 @@
              style="top: -12px; position: relative">
             <mat-checkbox [(ngModel)]="isJetztOptionActivated" (click)="handleJetztOption()">Jetzt?</mat-checkbox>
         </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <button mat-raised-button
-                    color="primary"
-                    style="margin-top: 8px;"
-                    (click)="handleBerechneNettoarbeitszeitClick()">
-                Berechne
-            </button>
-        </div>
 
-        <mat-divider style="position: relative; margin: 26px 0;"></mat-divider>
-
-        <div *ngIf="isNettoArbeitszeitBerechnet"
-             fxLayoutAlign="center center"
-             fxLayout="column">
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
+        <div fxLayout="row" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center" style="margin-top: 16px">
+            <div fxLayout="column">
+                <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
+                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
                     <label fxLayoutAlign="center"
                            class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
+                    <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
+                              *ngIf="showHelpForZeroNettoarbeitszeit"
+                              matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP }}">
+                        help_outline
+                    </mat-icon>
                 </div>
             </div>
         </div>
