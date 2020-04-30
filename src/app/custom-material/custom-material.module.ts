@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatInputModule,
         MatDividerModule,
         MatCheckboxModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatIconModule
     ],
     exports: [
         MatButtonModule,
@@ -29,7 +31,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatInputModule,
         MatDividerModule,
         MatCheckboxModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatIconModule
     ],
 })
 export class CustomMaterialModule {

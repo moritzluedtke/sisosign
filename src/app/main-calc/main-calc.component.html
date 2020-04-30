@@ -109,8 +109,15 @@
             <div fxLayout="row">
                 <div fxLayout="column">
                     <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
+                    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
+                        <label fxLayoutAlign="center"
+                               class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
+                        <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
+                                  *ngIf="showHelpForZeroNettoarbeitszeit"
+                                  matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP }}">
+                            help_outline
+                        </mat-icon>
+                    </div>
                 </div>
             </div>
         </div>
