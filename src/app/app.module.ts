@@ -14,8 +14,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ],
     imports: [
         BrowserModule,
-        CustomMaterialModule,
         BrowserAnimationsModule,
+        CustomMaterialModule,
         FlexLayoutModule,
     ],
     providers: [],
