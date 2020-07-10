@@ -15,7 +15,7 @@
             </mat-form-field>
         </div>
 
-        <div *ngIf="isSollarbeitszeitBerechnet"
+        <div *ngIf="areSollarbeitszeitenBerechnet"
              fxLayoutAlign="center center"
              fxLayout="column">
             <div fxLayout="row">
@@ -35,7 +35,7 @@
             <div fxLayout="row">
                 <div fxLayout="column">
                     <label fxLayoutAlign="center">8h erreicht:</label>
-                    <label fxLayoutAlign="center"class="mat-h2">
+                    <label fxLayoutAlign="center" class="mat-h2">
                         {{ eightHourWorkingLabel }}
                     </label>
                 </div>
@@ -85,7 +85,7 @@
             <mat-checkbox [(ngModel)]="isJetztOptionActivated" (click)="handleJetztOption()">Jetzt?</mat-checkbox>
         </div>
 
-        <div fxLayout="row" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center" style="margin-top: 16px">
+        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center" style="margin-top: 16px">
             <div fxLayout="column">
                 <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
@@ -96,6 +96,15 @@
                               matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP }}">
                         help_outline
                     </mat-icon>
+                </div>
+            </div>
+
+            <div fxLayout="column">
+                <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
+                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
+                    <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
+                        {{ tendenz.polarity }} {{ tendenzLabel }}
+                    </label>
                 </div>
             </div>
         </div>
