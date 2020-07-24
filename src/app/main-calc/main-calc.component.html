@@ -27,7 +27,7 @@
             </div>
             <div fxLayout="row">
                 <div fxLayout="column">
-                    <label fxLayoutAlign="center">7h36m erreicht:</label>
+                    <label fxLayoutAlign="center">{{regelarbeitszeitNetto.getHours()}}h{{regelarbeitszeitNetto.getMinutes()}}m erreicht:</label>
                     <label fxLayoutAlign="center"
                            class="mat-h2">{{ regelArbeitszeitLabel }}</label>
                 </div>
@@ -85,7 +85,8 @@
             <mat-checkbox [(ngModel)]="isJetztOptionActivated" (click)="handleJetztOption()">Jetzt?</mat-checkbox>
         </div>
 
-        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center" style="margin-top: 16px">
+        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
+             style="margin-top: 16px">
             <div fxLayout="column">
                 <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
@@ -93,7 +94,7 @@
                            class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
                     <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
                               *ngIf="showHelpForZeroNettoarbeitszeit"
-                              matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP }}">
+                              matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP }}">
                         help_outline
                     </mat-icon>
                 </div>
@@ -110,8 +111,23 @@
         </div>
     </mat-card>
 
-    <button mat-fab color="accent" class="custom-fab-button">
-        <mat-icon>more_horiz</mat-icon>
-    </button>
-
 </div>
+
+<eco-fab-speed-dial class="custom-fab-button">
+    <eco-fab-speed-dial-trigger>
+        <button mat-fab>
+            <mat-icon>more_horiz</mat-icon>
+        </button>
+    </eco-fab-speed-dial-trigger>
+
+    <eco-fab-speed-dial-actions>
+        <button mat-mini-fab (click)="openSettingsDialog(false)" color="primary"
+                matTooltip="{{ EINSTELLUNGEN_TOOLTIP }}">
+            <mat-icon>settings</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary"
+                matTooltip="{{ RELEASE_NOTES_TOOLTIP }}" (click)="redirectPageTo(RELEASE_NOTE_URL)">
+            <mat-icon>notes</mat-icon>
+        </button>
+    </eco-fab-speed-dial-actions>
+</eco-fab-speed-dial>

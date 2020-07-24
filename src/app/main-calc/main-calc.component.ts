@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 import { Polarity, Tendenz } from '../model/tendenz.model';
+import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { LocalStorageKeys } from '../global-constants/local-storage-keys.model';
+import { Util } from '../util/util.component';
 
 @Component({
     selector: 'app-main-calc',
@@ -9,15 +13,19 @@ import { Polarity, Tendenz } from '../model/tendenz.model';
 })
 export class MainCalcComponent implements OnInit {
 
+    regelarbeitszeitNetto = new Date();
+    regelarbeitszeitPlusMittagspause = new Date();
+    pauseInMinutes: number;
+
+    readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
     readonly EMPTY = '';
-    readonly TIME_SPLIT_SEPERATOR = ':00 GMT';
-    readonly MITTAGSPAUSE_IN_MINUTES = 45;
+    readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS = 20_000;
-    readonly NETTOARBEITSZEIT_LESS_THAN_45_MINUTES_TOOLTIP =
-        'Du hast vermutlich noch weniger als ' + this.MITTAGSPAUSE_IN_MINUTES +
+    readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
+    readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
+    readonly NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP =
+        'Du hast vermutlich noch weniger als ' + this.pauseInMinutes +
         ' Minuten (Länge der Mittagspause) gearbeitet.';
-    readonly REGELARBEITSZEIT_NETTO = new Date();
-    readonly REGELARBEITSZEIT_PLUS_MITTAGSPAUSE = new Date();
 
     nettoArbeitszeit = new Date();
     tendenz: Tendenz;
@@ -44,12 +52,12 @@ export class MainCalcComponent implements OnInit {
     nettoArbeitszeitLabel: string;
     tendenzLabel: string;
 
-    constructor() {
-        this.REGELARBEITSZEIT_NETTO.setHours(7);
-        this.REGELARBEITSZEIT_NETTO.setMinutes(36);
-
-        MainCalcComponent.addHoursAndMinutesTo(
-            this.REGELARBEITSZEIT_PLUS_MITTAGSPAUSE, 0, this.MITTAGSPAUSE_IN_MINUTES, this.REGELARBEITSZEIT_NETTO);
+    constructor(public dialog: MatDialog) {
+        if (this.loadDefaultValuesFromLocalStorage()) {
+            this.berechneEverything();
+        } else {
+            this.openSettingsDialog(true);
+        }
     }
 
     private static parseRawTime(rawTime: string): Date {
@@ -112,17 +120,32 @@ export class MainCalcComponent implements OnInit {
         this.ausstempelzeitFromInput = hoursWithLeadingZero + ':' + minutesWithLeadingZero;
     }
 
+    private berechneEverything(): void {
+        this.berechneSollarbeitszeiten();
+        this.berechneNettoArbeitszeit();
+    }
+
     private berechneSollarbeitszeiten(): void {
-        if (this.einstempelzeitFromInput === this.EMPTY) {
+        this.loadDefaultValuesFromLocalStorage();
+
+        if (Util.isEmpty(this.einstempelzeitFromInput)) {
             return;
         }
 
         this.einstempelzeitTime = MainCalcComponent.parseRawTime(this.einstempelzeitFromInput);
 
-        MainCalcComponent.addHoursAndMinutesTo(this.sixHourWorkingTime, 6, 45, this.einstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(this.normalWorkingTime, 8, 21, this.einstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(this.eightHourWorkingTime, 8, 45, this.einstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(this.tenHourWorkingTime, 10, 45, this.einstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(
+            this.sixHourWorkingTime, 6, this.pauseInMinutes, this.einstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(
+            this.eightHourWorkingTime, 8, this.pauseInMinutes, this.einstempelzeitTime);
+        MainCalcComponent.addHoursAndMinutesTo(
+            this.tenHourWorkingTime, 10, this.pauseInMinutes, this.einstempelzeitTime);
+
+        MainCalcComponent.addHoursAndMinutesTo(
+            this.normalWorkingTime,
+            this.regelarbeitszeitPlusMittagspause.getHours(),
+            this.regelarbeitszeitPlusMittagspause.getMinutes(),
+            this.einstempelzeitTime);
 
         this.sixHourWorkingLabel = this.convertDateToTimeString(this.sixHourWorkingTime);
         this.regelArbeitszeitLabel = this.convertDateToTimeString(this.normalWorkingTime);
@@ -133,6 +156,8 @@ export class MainCalcComponent implements OnInit {
     }
 
     private berechneNettoArbeitszeit(): void {
+        this.loadDefaultValuesFromLocalStorage();
+
         if (this.areInputsEmpty()) {
             return;
         }
@@ -146,7 +171,7 @@ export class MainCalcComponent implements OnInit {
             this.nettoArbeitszeit.setMinutes(0);
             this.showHelpForZeroNettoarbeitszeit = true;
         } else {
-            this.nettoArbeitszeit.setMinutes(this.nettoArbeitszeit.getMinutes() - this.MITTAGSPAUSE_IN_MINUTES);
+            this.nettoArbeitszeit.setMinutes(this.nettoArbeitszeit.getMinutes() - this.pauseInMinutes);
             this.showHelpForZeroNettoarbeitszeit = false;
         }
 
@@ -159,11 +184,11 @@ export class MainCalcComponent implements OnInit {
 
     private berechneTendenz(): void {
         let tendenzTime = MainCalcComponent.getTimeDifference(
-            this.REGELARBEITSZEIT_NETTO, this.nettoArbeitszeit);
+            this.regelarbeitszeitNetto, this.nettoArbeitszeit);
         let polarity = Polarity.PLUS;
 
         if (this.isNettoArbeitszeitBelowRegelarbeitszeit(this.nettoArbeitszeit)) {
-            tendenzTime = MainCalcComponent.getTimeDifference(this.nettoArbeitszeit, this.REGELARBEITSZEIT_NETTO);
+            tendenzTime = MainCalcComponent.getTimeDifference(this.nettoArbeitszeit, this.regelarbeitszeitNetto);
             polarity = Polarity.MINUS;
         }
 
@@ -173,13 +198,13 @@ export class MainCalcComponent implements OnInit {
     }
 
     private isNettoArbeitszeitBelowRegelarbeitszeit(nettoArbeitszeit: Date): boolean {
-        return nettoArbeitszeit.getHours() < this.REGELARBEITSZEIT_NETTO.getHours()
-            || (nettoArbeitszeit.getHours() === this.REGELARBEITSZEIT_NETTO.getHours() &&
-                nettoArbeitszeit.getMinutes() < this.REGELARBEITSZEIT_NETTO.getMinutes());
+        return nettoArbeitszeit.getHours() < this.regelarbeitszeitNetto.getHours()
+            || (nettoArbeitszeit.getHours() === this.regelarbeitszeitNetto.getHours() &&
+                nettoArbeitszeit.getMinutes() < this.regelarbeitszeitNetto.getMinutes());
     }
 
     private isNettoArbeitszeitBelowMittagspausenLength(nettoArbeitszeit: Date): boolean {
-        return nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() <= this.MITTAGSPAUSE_IN_MINUTES;
+        return nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() <= this.pauseInMinutes;
     }
 
     private areInputsEmpty(): boolean {
@@ -195,7 +220,7 @@ export class MainCalcComponent implements OnInit {
     }
 
     private convertDateToTimeString(time: Date): string {
-        return time.toTimeString().split(this.TIME_SPLIT_SEPERATOR)[0];
+        return time.toTimeString().split(this.TIME_SPLIT_SEPARATOR)[0];
     }
 
     public handleJetztOption(): void {
@@ -208,6 +233,37 @@ export class MainCalcComponent implements OnInit {
     public handleUserInputKeyPress(): void {
         this.berechneSollarbeitszeiten();
         this.berechneNettoArbeitszeit();
+    }
+
+    public openSettingsDialog(firstTime: boolean): void {
+        const dialogRef = this.dialog.open(SettingsDialogComponent, { width: '300px', data: { firstTime }, disableClose: firstTime });
+        dialogRef.afterClosed().subscribe(() => {
+            this.berechneEverything();
+        });
+    }
+
+    public loadDefaultValuesFromLocalStorage(): boolean {
+        const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
+        const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
+
+        if (Util.isNotEmpty(pausenlaenge) && Util.isNotEmpty(taeglicheArbeitszeitString)) {
+            this.pauseInMinutes = Number(pausenlaenge);
+            this.updateRegelarbeitszeit(taeglicheArbeitszeitString);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private updateRegelarbeitszeit(taeglicheArbeitszeitString: string) {
+        this.regelarbeitszeitNetto = MainCalcComponent.parseRawTime(taeglicheArbeitszeitString);
+        MainCalcComponent.addHoursAndMinutesTo(
+            this.regelarbeitszeitPlusMittagspause, 0, this.pauseInMinutes, this.regelarbeitszeitNetto);
+    }
+
+    public redirectPageTo(url: string): void {
+        window.open(url);
     }
 
 }

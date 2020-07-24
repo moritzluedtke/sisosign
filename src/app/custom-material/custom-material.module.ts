@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 
 @NgModule({
     imports: [
@@ -21,7 +23,9 @@ import { MatIconModule } from '@angular/material/icon';
         MatDividerModule,
         MatCheckboxModule,
         MatTooltipModule,
-        MatIconModule
+        MatIconModule,
+        MatDialogModule,
+        EcoFabSpeedDialModule,
     ],
     exports: [
         MatButtonModule,
@@ -32,7 +36,9 @@ import { MatIconModule } from '@angular/material/icon';
         MatDividerModule,
         MatCheckboxModule,
         MatTooltipModule,
-        MatIconModule
+        MatIconModule,
+        MatDialogModule,
+        EcoFabSpeedDialModule,
     ],
 })
 export class CustomMaterialModule {
