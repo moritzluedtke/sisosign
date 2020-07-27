@@ -24,8 +24,8 @@ export class MainCalcComponent implements OnInit {
     readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
     readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
     readonly NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP =
-        'Du hast vermutlich noch weniger als ' + this.pauseInMinutes +
-        ' Minuten (Länge der Mittagspause) gearbeitet.';
+        'Du hast vermutlich noch weniger Minuten als die Länge der Mittagspause gearbeitet. ' +
+        'Daher steht die Arbeitszeit noch auf 0.';
 
     nettoArbeitszeit = new Date();
     tendenz: Tendenz;
