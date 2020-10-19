@@ -104,7 +104,72 @@
                 <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
                     <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
-                        {{ tendenz.polarity }} {{ tendenzLabel }}
+                        {{ tendenzRichtung.polarity }} {{ tendenzLabel }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px" *ngIf="isWasWaereWennActivated">
+        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Was wäre wenn?</h2>
+
+        <div fxLayout="row"
+             fxLayoutAlign="center">
+            <mat-form-field>
+                <input matInput
+                       type="time"
+                       (input)="handleUserInputKeyPress()"
+                       [(ngModel)]="einstempelzeitFromInput"
+                       style="font-size: 1.4em"
+                       placeholder="Eingestempelt um">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row"
+             fxLayoutAlign="center">
+            <mat-form-field>
+                <input matInput
+                       type="time"
+                       (input)="handleUserInputKeyPress()"
+                       [(ngModel)]="ausstempelzeitFromInput"
+                       [disabled]="isJetztOptionActivated"
+                       style="font-size: 1.4em"
+                       placeholder="Ausgestempelt um">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row"
+             fxLayoutAlign="center">
+            <mat-form-field>
+                <input matInput
+                       type="time"
+                       (input)="handleUserInputKeyPress()"
+                       [(ngModel)]="ausstempelzeitFromInput"
+                       [disabled]="isJetztOptionActivated"
+                       style="font-size: 1.4em"
+                       placeholder="Pausenlänge">
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
+             style="margin-top: 16px">
+            <div fxLayout="column">
+                <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
+                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
+                    <label fxLayoutAlign="center"
+                           class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
+                    <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
+                              *ngIf="showHelpForZeroNettoarbeitszeit"
+                              matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP }}">
+                        help_outline
+                    </mat-icon>
+                </div>
+            </div>
+
+            <div fxLayout="column">
+                <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
+                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
+                    <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
+                        {{ tendenzRichtung.polarity }} {{ tendenzLabel }}
                     </label>
                 </div>
             </div>
@@ -126,8 +191,20 @@
             <mat-icon>settings</mat-icon>
         </button>
         <button mat-mini-fab color="primary"
+                matTooltip="{{ ISSUES_TOOLTIP }}" (click)="redirectPageTo(ISSUES_URL)">
+            <mat-icon>assignment_late</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary"
                 matTooltip="{{ RELEASE_NOTES_TOOLTIP }}" (click)="redirectPageTo(RELEASE_NOTE_URL)">
             <mat-icon>notes</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary"
+                matTooltip="{{ SOURCE_CODE_TOOLTIP }}" (click)="redirectPageTo(SOURCE_CODE_URL)">
+            <mat-icon>code</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary"
+                matTooltip="{{ WAS_WAERE_WENN_TOOLTIP }}" (click)="toggleWasWareWenn()">
+            <mat-icon>add</mat-icon>
         </button>
     </eco-fab-speed-dial-actions>
 </eco-fab-speed-dial>

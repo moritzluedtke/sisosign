@@ -3,7 +3,7 @@ export enum Polarity {
     MINUS = '-'
 }
 
-export class Tendenz {
+export class TendenzRichtung {
     constructor(public time: Date, public polarity: Polarity) {
     }
 }

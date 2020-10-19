@@ -3,11 +3,11 @@
         Einstellungen
     </h2>
 
-    <div [ngSwitch]="firstTime && showFirstTimeText">
+    <div [ngSwitch]="firstTime">
         <div *ngSwitchCase="true" fxLayout="column" fxLayoutGap="24px">
             <label>Bitte gib deine durchschnittliche tägliche Arbeitszeit und Pausenlänge an.</label>
             <div fxLayoutAlign="center">
-                <button mat-raised-button color="accent" (click)="showFirstTimeText = false">Okay!</button>
+                <button mat-raised-button color="accent" (click)="firstTime = false">Okay!</button>
             </div>
         </div>
 

@@ -11,7 +11,6 @@ export class SettingsDialogComponent implements OnInit {
     taeglicheArbeitszeit: string;
     pausenlaenge: string;
     firstTime: boolean;
-    showFirstTimeText = true;
 
     constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {

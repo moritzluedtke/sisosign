@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
-import { Polarity, Tendenz } from '../model/tendenz.model';
+import { Polarity, TendenzRichtung } from '../model/tendenz.model';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LocalStorageKeys } from '../global-constants/local-storage-keys.model';
@@ -18,21 +18,27 @@ export class MainCalcComponent implements OnInit {
     pauseInMinutes: number;
 
     readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
+    readonly ISSUES_URL = 'https://github.com/moritzluedtke/sisosign/issues';
+    readonly SOURCE_CODE_URL = 'https://github.com/moritzluedtke/sisosign';
     readonly EMPTY = '';
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS = 20_000;
-    readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
     readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
+    readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
+    readonly ISSUES_TOOLTIP = 'GitHub Issues';
+    readonly SOURCE_CODE_TOOLTIP = 'Source Code';
+    readonly WAS_WAERE_WENN_TOOLTIP = '"Was wäre wenn?" an-/ausschalten';
     readonly NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP =
         'Du hast vermutlich noch weniger Minuten als die Länge der Mittagspause gearbeitet. ' +
-        'Daher steht die Arbeitszeit noch auf 0.';
+        'Daher steht die Arbeitszeit noch auf 0h.';
 
     nettoArbeitszeit = new Date();
-    tendenz: Tendenz;
+    tendenzRichtung: TendenzRichtung;
 
     areSollarbeitszeitenBerechnet = false;
     isNettoArbeitszeitBerechnet = false;
     isJetztOptionActivated = false;
+    isWasWaereWennActivated = false;
     showHelpForZeroNettoarbeitszeit = false;
 
     einstempelzeitTime: Date;
@@ -192,9 +198,9 @@ export class MainCalcComponent implements OnInit {
             polarity = Polarity.MINUS;
         }
 
-        this.tendenz = new Tendenz(tendenzTime, polarity);
+        this.tendenzRichtung = new TendenzRichtung(tendenzTime, polarity);
 
-        this.setTendenzLabelTo(this.tendenz.time);
+        this.setTendenzLabelTo(this.tendenzRichtung.time);
     }
 
     private isNettoArbeitszeitBelowRegelarbeitszeit(nettoArbeitszeit: Date): boolean {
@@ -245,8 +251,16 @@ export class MainCalcComponent implements OnInit {
     public loadDefaultValuesFromLocalStorage(): boolean {
         const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
         const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
+        const wasWaereWennActivated = localStorage.getItem(LocalStorageKeys.WAS_WAERE_WENN_ACTIVATED_KEY);
 
-        if (Util.isNotEmpty(pausenlaenge) && Util.isNotEmpty(taeglicheArbeitszeitString)) {
+        if (Util.isEmpty(wasWaereWennActivated)) {
+            this.isWasWaereWennActivated = false;
+        } else {
+            this.isWasWaereWennActivated = Boolean(wasWaereWennActivated);
+        }
+
+        if (Util.isNotEmpty(pausenlaenge)
+            && Util.isNotEmpty(taeglicheArbeitszeitString)) {
             this.pauseInMinutes = Number(pausenlaenge);
             this.updateRegelarbeitszeit(taeglicheArbeitszeitString);
 
@@ -264,6 +278,11 @@ export class MainCalcComponent implements OnInit {
 
     public redirectPageTo(url: string): void {
         window.open(url);
+    }
+
+    public toggleWasWareWenn(): void {
+        this.isWasWaereWennActivated = !this.isWasWaereWennActivated;
+        localStorage.setItem(LocalStorageKeys.WAS_WAERE_WENN_ACTIVATED_KEY, `${ this.isWasWaereWennActivated }`);
     }
 
 }

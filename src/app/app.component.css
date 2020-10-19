@@ -1,7 +1,7 @@
 .ml-h1 {
     font-weight: bold;
     font-size: 5em;
-    margin: 32px 0 32px 0;
+    margin: 42px 0 32px 0;
     color: whitesmoke;
     letter-spacing: 2px;
     text-shadow: 3px 4px 15px rgba(0, 0, 0, 0.8);
@@ -9,7 +9,7 @@
 
 .ml-h4 {
     margin-top: 0;
-    margin-bottom: 100px;
+    margin-bottom: 95px;
     color: whitesmoke;
     text-shadow: 3px 4px 6px rgba(0, 0, 0, 0.6);
 }
