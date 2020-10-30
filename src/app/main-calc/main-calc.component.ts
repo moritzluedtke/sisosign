@@ -29,8 +29,8 @@ export class MainCalcComponent implements OnInit {
     readonly SOURCE_CODE_TOOLTIP = 'Source Code';
     readonly WAS_WAERE_WENN_TOOLTIP = '"Was wäre wenn?" an-/ausschalten';
     readonly NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP =
-        'Du hast vermutlich noch weniger Minuten als die Länge der Mittagspause gearbeitet. ' +
-        'Daher steht die Arbeitszeit noch auf 0h.';
+        'Du hast vermutlich noch weniger Minuten als die Länge der Pause gearbeitet. ' +
+        'Daher steht die Arbeitszeit noch auf 0.';
 
     tendenz: Tendenz;
     wasWaereWennTendenz: Tendenz;
@@ -111,8 +111,12 @@ export class MainCalcComponent implements OnInit {
         return newDate;
     }
 
+    private static isBruttoArbeitszeitBelowMittagspausenLength(nettoArbeitszeit: Date, pausenlaengeInMinutes: number): boolean {
+        return nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() <= pausenlaengeInMinutes;
+    }
+
     ngOnInit(): void {
-        interval(this.TWENTY_SECONDS).subscribe(x => {
+        interval(this.TWENTY_SECONDS).subscribe(() => {
             if (this.isJetztOptionActivated) {
                 this.setAusstempelzeitFromInputToNow();
                 this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
@@ -213,7 +217,7 @@ export class MainCalcComponent implements OnInit {
 
         const nettoArbeitszeit = bruttoArbeitszeit;
 
-        if (this.isBruttoArbeitszeitBelowMittagspausenLength(bruttoArbeitszeit)) {
+        if (MainCalcComponent.isBruttoArbeitszeitBelowMittagspausenLength(bruttoArbeitszeit, pausenlaengeInMinutes)) {
             nettoArbeitszeit.setMinutes(0);
         } else {
             nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - pausenlaengeInMinutes);
@@ -239,10 +243,6 @@ export class MainCalcComponent implements OnInit {
         return nettoArbeitszeit.getHours() < this.regelarbeitszeitNetto.getHours()
             || (nettoArbeitszeit.getHours() === this.regelarbeitszeitNetto.getHours() &&
                 nettoArbeitszeit.getMinutes() < this.regelarbeitszeitNetto.getMinutes());
-    }
-
-    private isBruttoArbeitszeitBelowMittagspausenLength(nettoArbeitszeit: Date): boolean {
-        return nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() <= this.pauseInMinutes;
     }
 
     setNettoArbeitszeitLabelTo(newTime: Date): void {
