@@ -8,4 +8,11 @@ export class Util {
         return value === null || value === undefined || value === '';
     }
 
+    public static isNumberEmpty(value: number): boolean {
+        return value === null || value === undefined;
+    }
+
+    static isObjectPresent(object: any) {
+        return object !== undefined;
+    }
 }

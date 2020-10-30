@@ -1,9 +1,9 @@
-export enum Polarity {
+export enum Richtung {
     PLUS = '+',
     MINUS = '-'
 }
 
 export class Tendenz {
-    constructor(public time: Date, public polarity: Polarity) {
+    constructor(public time: Date, public richtung: Richtung) {
     }
 }
