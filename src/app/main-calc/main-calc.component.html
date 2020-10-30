@@ -104,7 +104,7 @@
                 <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
                     <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
-                        {{ tendenzRichtung.polarity }} {{ tendenzLabel }}
+                        {{ tendenz.richtung }} {{ tendenzLabel }}
                     </label>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                 <input matInput
                        type="time"
                        (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="einstempelzeitFromInput"
+                       [(ngModel)]="wasWaereWennEinstempelzeitFromInput"
                        style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
             </mat-form-field>
@@ -131,8 +131,7 @@
                 <input matInput
                        type="time"
                        (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="ausstempelzeitFromInput"
-                       [disabled]="isJetztOptionActivated"
+                       [(ngModel)]="wasWaereWennAusstempelzeitFromInput"
                        style="font-size: 1.4em"
                        placeholder="Ausgestempelt um">
             </mat-form-field>
@@ -141,24 +140,23 @@
              fxLayoutAlign="center">
             <mat-form-field>
                 <input matInput
-                       type="time"
+                       type="number"
                        (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="ausstempelzeitFromInput"
-                       [disabled]="isJetztOptionActivated"
+                       [(ngModel)]="wasWaereWennPausenzeitFromInput"
                        style="font-size: 1.4em"
-                       placeholder="Pausenlänge">
+                       placeholder="Pausenlänge (in Min.)">
             </mat-form-field>
         </div>
 
-        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
+        <div fxLayout="column" *ngIf="isWasWaereWennNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
              style="margin-top: 16px">
             <div fxLayout="column">
                 <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
                     <label fxLayoutAlign="center"
-                           class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
+                           class="mat-h2">{{ wasWaereWennNettoArbeitszeitLabel }}</label>
                     <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
-                              *ngIf="showHelpForZeroNettoarbeitszeit"
+                              *ngIf="wasWaereWennShowHelpForZeroNettoarbeitszeit"
                               matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP }}">
                         help_outline
                     </mat-icon>
@@ -169,7 +167,7 @@
                 <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
                     <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
-                        {{ tendenzRichtung.polarity }} {{ tendenzLabel }}
+                        {{ wasWaereWennTendenz.richtung }} {{ wasWaereWennTendenzLabel }}
                     </label>
                 </div>
             </div>
@@ -204,7 +202,8 @@
         </button>
         <button mat-mini-fab color="primary"
                 matTooltip="{{ WAS_WAERE_WENN_TOOLTIP }}" (click)="toggleWasWareWenn()">
-            <mat-icon>add</mat-icon>
+            <mat-icon *ngIf="!isWasWaereWennActivated">add</mat-icon>
+            <mat-icon *ngIf="isWasWaereWennActivated">remove</mat-icon>
         </button>
     </eco-fab-speed-dial-actions>
 </eco-fab-speed-dial>
