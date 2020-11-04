@@ -24,8 +24,8 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Run linter
-        run: ng lint
+        run: npm lint
         
       # Runs a single command using the runners shell
       - name: Build production code
-        run: ng build --prod --aot true
+        run: npm build --prod --aot true
