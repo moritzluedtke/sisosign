@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LocalStorageKeys } from '../global-constants/local-storage-keys.model';
-import { Util } from '../util/util.component';
+import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
+import { Util } from '../../util/util.component';
 
 @Component({
     selector: 'app-settings-dialog',
