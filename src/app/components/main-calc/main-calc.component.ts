@@ -174,15 +174,15 @@ export class MainCalcComponent implements OnInit {
             this.appVersionService.setNewVersionPresentTo(true);
 
             this.openNewVersionSnackbar().afterDismissed().subscribe(() => {
-                console.log('Now!');
-
                 localStorage.setItem(LocalStorageKeys.LAST_USED_APP_VERSION_KEY, currentAppVersion);
                 this.appVersionService.setNewVersionPresentTo(false);
-                console.log(this.appVersionService.isNewVersionPresent());
-                this.appRef.tick();
-
+                this.rerenderPage();
             });
         }
+    }
+
+    private rerenderPage(): void {
+        this.appRef.tick();
     }
 
     private openNewVersionSnackbar() {
@@ -335,22 +335,10 @@ export class MainCalcComponent implements OnInit {
     public loadDefaultValuesFromLocalStorage(): boolean {
         const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
         const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
-        const wasWaereWennActivated = localStorage.getItem(LocalStorageKeys.WAS_WAERE_WENN_ACTIVATED_KEY);
-        const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
-        const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
 
-        if (Util.isEmpty(wasWaereWennActivated)) {
-            this.isWasWaereWennActivated = false;
-        } else {
-            this.isWasWaereWennActivated = JSON.parse(wasWaereWennActivated);
-        }
-
-        if (Util.isEmpty(einstempelzeitRaw) || MainCalcComponent.isGivenDateNotToday(new Date(lastUpdateOnEinstempelzeit))) {
-            localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
-            localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
-        } else {
-            this.einstempelzeitFromInput = einstempelzeitRaw;
-        }
+        this.loadJetztOptionActivatedByDefault();
+        this.loadWasWaereWennActivated();
+        this.loadEinstempelzeit();
 
         if (Util.isNotEmpty(pausenlaenge)
             && Util.isNotEmpty(taeglicheArbeitszeitString)) {
@@ -361,6 +349,37 @@ export class MainCalcComponent implements OnInit {
         }
 
         return false;
+    }
+
+    private loadJetztOptionActivatedByDefault() {
+        const isJetztOptionActivatedAsDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
+
+        if (isJetztOptionActivatedAsDefault) {
+            this.handleJetztOption();
+            this.isJetztOptionActivated = isJetztOptionActivatedAsDefault;
+        }
+    }
+
+    private loadWasWaereWennActivated() {
+        const wasWaereWennActivated = localStorage.getItem(LocalStorageKeys.WAS_WAERE_WENN_ACTIVATED_KEY);
+
+        if (Util.isEmpty(wasWaereWennActivated)) {
+            this.isWasWaereWennActivated = false;
+        } else {
+            this.isWasWaereWennActivated = JSON.parse(wasWaereWennActivated);
+        }
+    }
+
+    private loadEinstempelzeit() {
+        const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
+        const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+
+        if (Util.isEmpty(einstempelzeitRaw) || MainCalcComponent.isGivenDateNotToday(new Date(lastUpdateOnEinstempelzeit))) {
+            localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
+            localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+        } else {
+            this.einstempelzeitFromInput = einstempelzeitRaw;
+        }
     }
 
     private saveEinstempelzeitToLocalStorage() {
