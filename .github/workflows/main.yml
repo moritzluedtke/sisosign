@@ -31,5 +31,5 @@ jobs:
 
       - name: Lint & build the app
         run: |
-          npm lint
-          npm build
+          npm run lint
+          npm run build
