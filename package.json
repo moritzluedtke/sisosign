@@ -3,12 +3,14 @@
   "version": "2.2.0",
   "scripts": {
     "ng": "ng",
+    "clean": "rimraf ./dist",
     "start": "node server.js",
     "build": "ng build --prod --aot true",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "serve": "ng serve"
+    "serve": "ng serve",
+    "build:ci": "npm run clean && npm run build:prod"
   },
   "private": true,
   "dependencies": {
