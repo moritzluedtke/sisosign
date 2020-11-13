@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 import { Richtung, Tendenz } from '../model/tendenz.model';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LocalStorageKeys } from '../global-constants/local-storage-keys.model';
 import { Util } from '../util/util.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppVersionService } from '../service/app-version.service';
 
 @Component({
     selector: 'app-main-calc',
@@ -20,6 +22,9 @@ export class MainCalcComponent implements OnInit {
     readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
     readonly ISSUES_URL = 'https://github.com/moritzluedtke/sisosign/issues';
     readonly SOURCE_CODE_URL = 'https://github.com/moritzluedtke/sisosign';
+    readonly SNACKBAR_NEW_VERSION_RELEASED_TEXT =
+        `SISOSIGN v${ this.appVersionService.getAppVersion() } ist jetzt live! Viel Spaß mit den neuen Features :)`;
+    readonly SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT = 'Cool!';
     readonly SETTINGS_DIALOG_WIDTH = '300px';
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS = 20_000;
@@ -63,7 +68,12 @@ export class MainCalcComponent implements OnInit {
     tendenzLabel: string;
     wasWaereWennTendenzLabel: string;
 
-    constructor(public dialog: MatDialog) {
+    constructor(public dialog: MatDialog,
+                public snackbar: MatSnackBar,
+                public appVersionService: AppVersionService,
+                private appRef: ApplicationRef) {
+        this.showNewVersionSnackbar();
+
         if (this.loadDefaultValuesFromLocalStorage()) {
             this.berechneEverything();
         } else {
@@ -154,6 +164,30 @@ export class MainCalcComponent implements OnInit {
                 this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
             }
         });
+    }
+
+    private showNewVersionSnackbar(): void {
+        const lastUsedAppVersion = localStorage.getItem(LocalStorageKeys.LAST_USED_APP_VERSION_KEY);
+        const currentAppVersion = this.appVersionService.getAppVersion();
+
+        if (lastUsedAppVersion !== currentAppVersion) {
+            this.appVersionService.setNewVersionPresentTo(true);
+
+            this.openNewVersionSnackbar().afterDismissed().subscribe(() => {
+                console.log('Now!');
+
+                localStorage.setItem(LocalStorageKeys.LAST_USED_APP_VERSION_KEY, currentAppVersion);
+                this.appVersionService.setNewVersionPresentTo(false);
+                console.log(this.appVersionService.isNewVersionPresent());
+                this.appRef.tick();
+
+            });
+        }
+    }
+
+    private openNewVersionSnackbar() {
+        return this.snackbar.open(this.SNACKBAR_NEW_VERSION_RELEASED_TEXT, this.SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT,
+            { panelClass: 'custom-snack-bar-container' });
     }
 
     private setAusstempelzeitFromInputToNow(): void {
