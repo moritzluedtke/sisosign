@@ -11,7 +11,7 @@ import { AppVersionService } from '../../service/app-version.service';
 @Component({
     selector: 'app-main-calc',
     templateUrl: './main-calc.component.html',
-    styleUrls: [ './main-calc.component.css' ]
+    styleUrls: [ './main-calc.component.scss' ]
 })
 export class MainCalcComponent implements OnInit {
 
@@ -23,7 +23,9 @@ export class MainCalcComponent implements OnInit {
     readonly ISSUES_URL = 'https://github.com/moritzluedtke/sisosign/issues';
     readonly SOURCE_CODE_URL = 'https://github.com/moritzluedtke/sisosign';
     readonly SNACKBAR_NEW_VERSION_RELEASED_TEXT =
-        `SISOSIGN v${ this.appVersionService.getAppVersion() } ist jetzt live! Viel Spaß mit den neuen Features :)`;
+        `SISOSIGN v${ this.appVersionService.getAppVersion() } ist jetzt live!\n\n` +
+        'Die Release Notes sind im Menü verlinkt.\n' +
+        'Viel Spaß mit den neuen Features :)';
     readonly SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT = 'Cool!';
     readonly SETTINGS_DIALOG_WIDTH = '300px';
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
