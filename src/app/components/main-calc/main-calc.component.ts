@@ -1,12 +1,12 @@
 import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
-import { Richtung, Tendenz } from '../model/tendenz.model';
+import { Richtung, Tendenz } from '../../model/tendenz.model';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { LocalStorageKeys } from '../global-constants/local-storage-keys.model';
-import { Util } from '../util/util.component';
+import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
+import { Util } from '../../util/util.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AppVersionService } from '../service/app-version.service';
+import { AppVersionService } from '../../service/app-version.service';
 
 @Component({
     selector: 'app-main-calc',

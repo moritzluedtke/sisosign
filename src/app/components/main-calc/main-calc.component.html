@@ -28,7 +28,8 @@
             </div>
             <div fxLayout="row">
                 <div fxLayout="column">
-                    <label fxLayoutAlign="center">{{regelarbeitszeitNetto.getHours()}}h{{regelarbeitszeitNetto.getMinutes()}}m erreicht:</label>
+                    <label fxLayoutAlign="center">{{regelarbeitszeitNetto.getHours()}}h{{regelarbeitszeitNetto.getMinutes()}}m
+                        erreicht:</label>
                     <label fxLayoutAlign="center"
                            class="mat-h2">{{ regelArbeitszeitLabel }}</label>
                 </div>
@@ -85,7 +86,11 @@
         <div fxLayout="row"
              fxLayoutAlign="center"
              style="top: -12px; position: relative">
-            <mat-checkbox [(ngModel)]="isJetztOptionActivated" (click)="handleJetztOption()">Jetzt?</mat-checkbox>
+            <mat-checkbox [(ngModel)]="isJetztOptionActivated"
+                          (click)="handleJetztOption()"
+                          (keydown.space)="handleJetztOption()">
+                Jetzt?
+            </mat-checkbox>
         </div>
 
         <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
