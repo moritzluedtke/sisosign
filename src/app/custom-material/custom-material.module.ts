@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
     imports: [
@@ -23,6 +24,7 @@ import { MatDividerModule } from '@angular/material/divider';
         MatTooltipModule,
         MatIconModule,
         MatDialogModule,
+        MatSnackBarModule,
         EcoFabSpeedDialModule,
     ],
     exports: [
@@ -36,6 +38,7 @@ import { MatDividerModule } from '@angular/material/divider';
         MatTooltipModule,
         MatIconModule,
         MatDialogModule,
+        MatSnackBarModule,
         EcoFabSpeedDialModule,
     ],
 })

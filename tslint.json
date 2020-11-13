@@ -44,7 +44,7 @@
             }
         ],
         "no-consecutive-blank-lines": false,
-        "no-trailing-whitespace": true,
+        "no-trailing-whitespace": false,
         "no-console": [
             true,
             "debug",
