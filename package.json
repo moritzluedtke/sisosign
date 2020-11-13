@@ -10,7 +10,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "serve": "ng serve",
-    "build:ci": "npm run clean && npm run build:prod"
+    "build:ci": "npm run clean && npm run build"
   },
   "private": true,
   "dependencies": {
