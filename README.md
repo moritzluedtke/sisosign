@@ -14,3 +14,7 @@ Enjoy it in it's full glory [right here](https://sisosign.herokuapp.com/).
 
 1. If you want to know what SISOSIGN stands for, you have to look through the source code or ask a die hard fan ;)
 2. SISOSIGN probably has more users than the developer assumes.
+
+## Credits
+
+- [Pure CSS Firworks from Eddie Lin (CodePen Link)](https://codepen.io/yshlin/pen/ylDEk)

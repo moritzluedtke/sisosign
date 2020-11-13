@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
-import { Richtung, Tendenz } from '../model/tendenz.model';
+import { Richtung, Tendenz } from '../../model/tendenz.model';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { LocalStorageKeys } from '../global-constants/local-storage-keys.model';
-import { Util } from '../util/util.component';
+import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
+import { Util } from '../../util/util.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppVersionService } from '../../service/app-version.service';
 
 @Component({
     selector: 'app-main-calc',
     templateUrl: './main-calc.component.html',
-    styleUrls: [ './main-calc.component.css' ]
+    styleUrls: [ './main-calc.component.scss' ]
 })
 export class MainCalcComponent implements OnInit {
 
@@ -20,6 +22,11 @@ export class MainCalcComponent implements OnInit {
     readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
     readonly ISSUES_URL = 'https://github.com/moritzluedtke/sisosign/issues';
     readonly SOURCE_CODE_URL = 'https://github.com/moritzluedtke/sisosign';
+    readonly SNACKBAR_NEW_VERSION_RELEASED_TEXT =
+        `SISOSIGN v${ this.appVersionService.getAppVersion() } ist jetzt live!\n\n` +
+        'Die Release Notes sind im Menü verlinkt.\n' +
+        'Viel Spaß mit den neuen Features :)';
+    readonly SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT = 'Cool!';
     readonly SETTINGS_DIALOG_WIDTH = '300px';
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS = 20_000;
@@ -63,7 +70,12 @@ export class MainCalcComponent implements OnInit {
     tendenzLabel: string;
     wasWaereWennTendenzLabel: string;
 
-    constructor(public dialog: MatDialog) {
+    constructor(public dialog: MatDialog,
+                public snackbar: MatSnackBar,
+                public appVersionService: AppVersionService,
+                private appRef: ApplicationRef) {
+        this.showNewVersionSnackbar();
+
         if (this.loadDefaultValuesFromLocalStorage()) {
             this.berechneEverything();
         } else {
@@ -154,6 +166,30 @@ export class MainCalcComponent implements OnInit {
                 this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
             }
         });
+    }
+
+    private showNewVersionSnackbar(): void {
+        const lastUsedAppVersion = localStorage.getItem(LocalStorageKeys.LAST_USED_APP_VERSION_KEY);
+        const currentAppVersion = this.appVersionService.getAppVersion();
+
+        if (lastUsedAppVersion !== currentAppVersion) {
+            this.appVersionService.setNewVersionPresentTo(true);
+
+            this.openNewVersionSnackbar().afterDismissed().subscribe(() => {
+                localStorage.setItem(LocalStorageKeys.LAST_USED_APP_VERSION_KEY, currentAppVersion);
+                this.appVersionService.setNewVersionPresentTo(false);
+                this.rerenderPage();
+            });
+        }
+    }
+
+    private rerenderPage(): void {
+        this.appRef.tick();
+    }
+
+    private openNewVersionSnackbar() {
+        return this.snackbar.open(this.SNACKBAR_NEW_VERSION_RELEASED_TEXT, this.SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT,
+            { panelClass: 'custom-snack-bar-container' });
     }
 
     private setAusstempelzeitFromInputToNow(): void {
@@ -301,22 +337,10 @@ export class MainCalcComponent implements OnInit {
     public loadDefaultValuesFromLocalStorage(): boolean {
         const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
         const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
-        const wasWaereWennActivated = localStorage.getItem(LocalStorageKeys.WAS_WAERE_WENN_ACTIVATED_KEY);
-        const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
-        const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
 
-        if (Util.isEmpty(wasWaereWennActivated)) {
-            this.isWasWaereWennActivated = false;
-        } else {
-            this.isWasWaereWennActivated = JSON.parse(wasWaereWennActivated);
-        }
-
-        if (Util.isEmpty(einstempelzeitRaw) || MainCalcComponent.isGivenDateNotToday(new Date(lastUpdateOnEinstempelzeit))) {
-            localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
-            localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
-        } else {
-            this.einstempelzeitFromInput = einstempelzeitRaw;
-        }
+        this.loadJetztOptionActivatedByDefault();
+        this.loadWasWaereWennActivated();
+        this.loadEinstempelzeit();
 
         if (Util.isNotEmpty(pausenlaenge)
             && Util.isNotEmpty(taeglicheArbeitszeitString)) {
@@ -327,6 +351,37 @@ export class MainCalcComponent implements OnInit {
         }
 
         return false;
+    }
+
+    private loadJetztOptionActivatedByDefault() {
+        const isJetztOptionActivatedAsDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
+
+        if (isJetztOptionActivatedAsDefault) {
+            this.handleJetztOption();
+            this.isJetztOptionActivated = isJetztOptionActivatedAsDefault;
+        }
+    }
+
+    private loadWasWaereWennActivated() {
+        const wasWaereWennActivated = localStorage.getItem(LocalStorageKeys.WAS_WAERE_WENN_ACTIVATED_KEY);
+
+        if (Util.isEmpty(wasWaereWennActivated)) {
+            this.isWasWaereWennActivated = false;
+        } else {
+            this.isWasWaereWennActivated = JSON.parse(wasWaereWennActivated);
+        }
+    }
+
+    private loadEinstempelzeit() {
+        const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
+        const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+
+        if (Util.isEmpty(einstempelzeitRaw) || MainCalcComponent.isGivenDateNotToday(new Date(lastUpdateOnEinstempelzeit))) {
+            localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
+            localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+        } else {
+            this.einstempelzeitFromInput = einstempelzeitRaw;
+        }
     }
 
     private saveEinstempelzeitToLocalStorage() {

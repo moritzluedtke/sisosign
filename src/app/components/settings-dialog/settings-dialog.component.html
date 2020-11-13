@@ -30,6 +30,10 @@
                        placeholder="Pausenlänge (in Min.)">
             </mat-form-field>
 
+            <div>
+                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault">Jetzt-Option ist standardmäßig aktiviert</mat-checkbox>
+            </div>
+
             <div fxLayoutAlign="center">
                 <button mat-raised-button (click)="saveAndClose()"
                         [disabled]="isAnyInputInvalid()"

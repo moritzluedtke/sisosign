@@ -1,3 +1,10 @@
+<div [class.fade-off]="!appVersionService.isNewVersionPresent()">
+    <div class="pyro">
+        <div class="before"></div>
+        <div class="after"></div>
+    </div>
+</div>
+
 <div fxLayout="column">
     <div fxLayout="column" fxLayoutAlign="center center">
         <label class="mat-display-2 ml-h1" matTooltip="Should I Stay Or Should I Go (Now)">
@@ -12,7 +19,7 @@
 
     <div class="fixed-footer">
         <label class="mat-h4 footer-text">
-            v{{ appVersion }}
+            v{{ appVersionService.getAppVersion() }}
         </label>
     </div>
 </div>

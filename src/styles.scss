@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "assets/styles/fireworks";
+
+body {
+    margin: 0;
+}
+
+.mat-tooltip {
+    font-size: .9em !important;
+}
+
+.custom-snack-bar-container {
+    background: #673ab7;
+    white-space: pre-wrap;
+}
+
+simple-snack-bar {
+    padding: 6px;
+    font-weight: bold;
+    font-size: 1em !important;
+}
+
+.fade-off {
+    opacity: 0;
+    transition: .9s ease-in-out all;
+}
