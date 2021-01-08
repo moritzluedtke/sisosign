@@ -254,10 +254,8 @@ export class MainCalcComponent implements OnInit {
     }
 
     private berechneNettoArbeitszeitWithDefaultPausenlaenge(): void {
-        const nettoArbeitszeit = MainCalcComponent.berechneNettoArbeitszeit(
-            this.einstempelzeitFromInput,
-            this.ausstempelzeitFromInput,
-            this.pauseInMinutes);
+        const nettoArbeitszeit =
+            MainCalcComponent.berechneNettoArbeitszeit(this.einstempelzeitFromInput, this.ausstempelzeitFromInput, this.pauseInMinutes);
 
         if (Util.isObjectPresent(nettoArbeitszeit)) {
             this.isNettoArbeitszeitBerechnet = true;
