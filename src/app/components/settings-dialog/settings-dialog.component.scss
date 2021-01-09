@@ -5,3 +5,13 @@
 :host::ng-deep.mat-checkbox-inner-container{
   margin-top: 4px;
 }
+
+.custom-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0;
+}
+
+.custom-radio-button {
+  margin-bottom: 8px;
+}

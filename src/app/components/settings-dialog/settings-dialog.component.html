@@ -1,49 +1,64 @@
 <div class="mat-typography">
-    <h2 style="margin-bottom: 24px">
+    <h2 style="margin-bottom: 28px; margin-top: 6px; font-size: 1.9em" fxLayoutAlign="center">
         Einstellungen
     </h2>
 
     <div [ngSwitch]="firstTime">
         <div *ngSwitchCase="true" fxLayout="column" fxLayoutGap="24px">
-            <label>Bitte gib deine durchschnittliche tägliche Arbeitszeit und Pausenlänge an.</label>
+            <label>Bitte gib deine tägliche Arbeitszeit und Pausenlänge an.</label>
             <div fxLayoutAlign="center">
                 <button mat-raised-button color="accent" (click)="firstTime = false">Okay!</button>
             </div>
         </div>
 
-        <div fxLayout="column" style="margin: 16px 16px 0 16px" *ngSwitchCase="false">
+        <div fxLayout="column" style="margin: 16px 16px 0 16px" *ngSwitchCase="false" fxLayoutGap="12px">
             <mat-form-field>
                 <input matInput
                        type="time"
-                       [(ngModel)]="taeglicheArbeitszeit"
-                       (keyup.enter)="saveAndClose()"
+                       [(ngModel)]="taeglicheArbeitszeitInput"
                        style="font-size: 1.4em"
+                       (change)="checkForIllegalArbeitszeitInput()"
                        placeholder="Tägliche Arbeitszeit (hh:mm)">
-            </mat-form-field>
-
-            <mat-form-field>
-                <input matInput
-                       type="number"
-                       [(ngModel)]="pausenlaenge"
-                       (keyup.enter)="saveAndClose()"
-                       style="font-size: 1.4em"
-                       placeholder="Pausenlänge (in Min.)">
+                <mat-hint>6:00h bis 10h möglich</mat-hint>
             </mat-form-field>
 
             <div>
-                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault">Jetzt-Option ist standardmäßig aktiviert</mat-checkbox>
+                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault">
+                    Jetzt-Option standardmäßig aktivieren
+                </mat-checkbox>
+            </div>
+
+            <div>
+                <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Pausenregelung</p>
+
+                <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung">
+                    <mat-radio-button class="custom-radio-button" value="LAW">Mindestlänge nach gesetzlicher Regelung</mat-radio-button>
+                    <mat-radio-button class="custom-radio-button" value="CLASSIC">
+                        <mat-label style="margin-bottom: 12px;">Classic</mat-label>
+                        <mat-form-field>
+                            <input matInput
+                                   [disabled]="selectedPausenregelung!=='CLASSIC'"
+                                   type="number"
+                                   [(ngModel)]="pausenlaenge"
+                                   (keyup.enter)="saveAndClose()"
+                                   style="font-size: 1.4em"
+                                   placeholder="Pausenlänge (in Min.)">
+                        </mat-form-field>
+
+                    </mat-radio-button>
+                </mat-radio-group>
             </div>
 
             <div fxLayoutAlign="center">
                 <button mat-raised-button (click)="saveAndClose()"
                         [disabled]="isAnyInputInvalid()"
-                        color="accent" style="margin-top: 12px;">
+                        color="accent" style="margin-bottom: 12px;">
                     Speichern
                 </button>
             </div>
 
             <label style="font-size: 12px; margin-top: 20px; color: darkgrey">
-                <i>Deine Daten werden ausschließlich lokal im Browser gespeichert.</i>
+                <i>Deine hier eingegebenen Daten werden ausschließlich lokal im Browser gespeichert und sind frei von personenbezogenen Daten.</i>
             </label>
         </div>
     </div>

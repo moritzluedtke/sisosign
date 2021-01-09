@@ -15,4 +15,5 @@ export class Util {
     static isObjectPresent(object: any) {
         return object !== undefined;
     }
+
 }

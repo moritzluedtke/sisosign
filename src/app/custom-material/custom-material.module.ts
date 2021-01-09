@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatIconModule,
         MatDialogModule,
         MatSnackBarModule,
-        EcoFabSpeedDialModule,
+        MatRadioModule,
+        EcoFabSpeedDialModule
     ],
     exports: [
         MatButtonModule,
@@ -39,8 +41,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatIconModule,
         MatDialogModule,
         MatSnackBarModule,
-        EcoFabSpeedDialModule,
-    ],
+        MatRadioModule,
+        EcoFabSpeedDialModule
+    ]
 })
 export class CustomMaterialModule {
 }

@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
 import { Util } from '../../util/util.component';
+import { TimeUtil } from '../../util/time-util.component';
 
 @Component({
     selector: 'app-settings-dialog',
@@ -9,10 +10,14 @@ import { Util } from '../../util/util.component';
     styleUrls: [ './settings-dialog.component.scss' ]
 })
 export class SettingsDialogComponent implements OnInit {
+    taeglicheArbeitszeitInput: string;
     taeglicheArbeitszeit: string;
     pausenlaenge: string;
     firstTime: boolean;
     isJetztOptionActivatedByDefault: boolean;
+    selectedPausenregelung: string;
+    lowerArbeitszeitLimit = TimeUtil.parseRawTime('06:00');
+    upperArbeitszeitLimit = TimeUtil.parseRawTime('10:00');
 
     constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -21,7 +26,9 @@ export class SettingsDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.taeglicheArbeitszeit = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
+        this.taeglicheArbeitszeitInput = this.taeglicheArbeitszeit;
         this.pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
+        this.selectedPausenregelung = localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY);
         this.isJetztOptionActivatedByDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
     }
 
@@ -29,12 +36,27 @@ export class SettingsDialogComponent implements OnInit {
         localStorage.setItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY, this.taeglicheArbeitszeit);
         localStorage.setItem(LocalStorageKeys.PAUSENLAENGE_KEY, this.pausenlaenge);
         localStorage.setItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY, String(this.isJetztOptionActivatedByDefault));
+        localStorage.setItem(LocalStorageKeys.PAUSENREGELUNG_KEY, String(this.selectedPausenregelung));
 
         this.dialogRef.close();
     }
 
     public isAnyInputInvalid(): boolean {
-        return Util.isEmpty(this.taeglicheArbeitszeit) || Util.isEmpty(this.pausenlaenge);
+        return Util.isEmpty(this.taeglicheArbeitszeitInput) || Util.isEmpty(this.pausenlaenge);
     }
+
+    public checkForIllegalArbeitszeitInput() {
+        const oldValue = this.taeglicheArbeitszeit;
+        const newValue = this.taeglicheArbeitszeitInput;
+
+        const newTime = TimeUtil.parseRawTime(newValue);
+
+        if (TimeUtil.isABeforeOrEqualToB(newTime, this.lowerArbeitszeitLimit) || TimeUtil.isAAfterB(newTime, this.upperArbeitszeitLimit)) {
+            this.taeglicheArbeitszeitInput = oldValue;
+        } else {
+            this.taeglicheArbeitszeit = this.taeglicheArbeitszeitInput;
+        }
+    }
+
 
 }
