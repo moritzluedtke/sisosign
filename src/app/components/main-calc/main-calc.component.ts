@@ -7,6 +7,8 @@ import { LocalStorageKeys } from '../../global-constants/local-storage-keys.mode
 import { Util } from '../../util/util.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppVersionService } from '../../service/app-version.service';
+import { Pausenregelung } from '../../model/pausenregelung.model';
+import { TimeUtil } from '../../util/time-util.component';
 
 @Component({
     selector: 'app-main-calc',
@@ -18,6 +20,17 @@ export class MainCalcComponent implements OnInit {
     regelarbeitszeitNetto = new Date();
     regelarbeitszeitPlusMittagspause = new Date();
     pauseInMinutes: number;
+    gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit = 30;
+    gesetzlichePauseForOverNineOfBruttoArbeitszeit = 45;
+    additionalGesetzlichePauseAfterNineHours = 15;
+
+    sixHoursAsDate = TimeUtil.parseRawTime('06:00');
+    sixHoursPlusGesetzlichePauseAsDate = TimeUtil.parseRawTime(`06:${ this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit }`);
+    nineHoursAsDate = TimeUtil.parseRawTime('09:00');
+    nineHoursPlusGesetzlichePauseAsDate = TimeUtil.parseRawTime(`09:${ this.additionalGesetzlichePauseAfterNineHours }`);
+    nineHoursMinusFirstPartOfGesetzlichePauseAsDate =
+        TimeUtil.parseRawTime(`08:${ this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit }`);
+    tenHoursAsDate = TimeUtil.parseRawTime('10:00');
 
     readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
     readonly ISSUES_URL = 'https://github.com/moritzluedtke/sisosign/issues';
@@ -25,11 +38,11 @@ export class MainCalcComponent implements OnInit {
     readonly SNACKBAR_NEW_VERSION_RELEASED_TEXT =
         `SISOSIGN v${ this.appVersionService.getAppVersion() } ist jetzt live!\n\n` +
         'Die Release Notes sind im Menü verlinkt.\n' +
-        'Viel Spaß mit den neuen Features :)';
+        'Viel Spaß mit der neuen Version :)';
     readonly SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT = 'Cool!';
     readonly SETTINGS_DIALOG_WIDTH = '300px';
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
-    readonly TWENTY_SECONDS = 20_000;
+    readonly TWENTY_SECONDS_IN_MS = 20_000;
     readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
     readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
     readonly ISSUES_TOOLTIP = 'GitHub Issues';
@@ -38,36 +51,39 @@ export class MainCalcComponent implements OnInit {
     readonly NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP =
         'Du hast vermutlich noch weniger Minuten als die Länge der Pause gearbeitet. ' +
         'Daher steht die Arbeitszeit noch auf 0.';
+    readonly SIX_HOURS = 6;
 
     tendenz: Tendenz;
     wasWaereWennTendenz: Tendenz;
+
+    selectedPausenregelung: Pausenregelung;
 
     areSollarbeitszeitenBerechnet = false;
     isNettoArbeitszeitBerechnet = false;
     isWasWaereWennNettoArbeitszeitBerechnet = false;
     isJetztOptionActivated = false;
     isWasWaereWennActivated = false;
-    showHelpForZeroNettoarbeitszeit = false;
-    wasWaereWennShowHelpForZeroNettoarbeitszeit = false;
 
+    wasWaereWennShowHelpForZeroNettoarbeitszeit = false;
     wasWaereWennEinstempelzeitFromInput = '';
     wasWaereWennAusstempelzeitFromInput = '';
     wasWaereWennPausenzeitFromInput = '';
+
     einstempelzeitFromInput = '';
     ausstempelzeitFromInput = '';
 
-    sixHourWorkingTime = new Date();
-    normalWorkingTime = new Date();
-    eightHourWorkingTime = new Date();
-    tenHourWorkingTime = new Date();
+    sechsNettostundenAusstempeluhrzeit = new Date();
+    regelarbeitszeitAusstempeluhrzeit = new Date();
+    achtStundenAusstempeluhrzeit = new Date();
+    zehnStundenAusstempeluhrzeit = new Date();
 
     sixHourWorkingLabel: string;
-    regelArbeitszeitLabel: string;
+    regelarbeitszeitLabel: string;
     eightHourWorkingLabel: string;
-    tenHourLabel: string;
+    tenHourWorkingLabel: string;
     nettoArbeitszeitLabel: string;
-    wasWaereWennNettoArbeitszeitLabel: string;
     tendenzLabel: string;
+    wasWaereWennNettoArbeitszeitLabel: string;
     wasWaereWennTendenzLabel: string;
 
     constructor(public dialog: MatDialog,
@@ -83,70 +99,23 @@ export class MainCalcComponent implements OnInit {
         }
     }
 
-    private static parseRawTime(rawTime: string): Date {
-        const hours = Number(rawTime.split(':')[0]);
-        const minutes = Number(rawTime.split(':')[1]);
-
-        const parsedDate = new Date();
-        parsedDate.setHours(hours);
-        parsedDate.setMinutes(minutes);
-        parsedDate.setSeconds(0);
-        parsedDate.setMilliseconds(0);
-
-        return parsedDate;
-    }
-
-    private static addHoursAndMinutesTo(resultingTime: Date, hours: number, minutes: number, baseTime: Date) {
-        resultingTime.setHours(baseTime.getHours() + hours);
-        resultingTime.setMinutes(baseTime.getMinutes() + minutes);
-
-        // only here, to set seconds to zero in order to split the label based on that
-        resultingTime.setSeconds(baseTime.getSeconds());
-    }
-
-    private static getTimeDifference(fromTime: Date, toTime: Date): Date {
-        // reset seconds and Milliseconds as they are not considered during calculation
-        fromTime.setSeconds(0);
-        toTime.setSeconds(0);
-        fromTime.setMilliseconds(0);
-        toTime.setMilliseconds(0);
-
-        const differenceAsDate = new Date(toTime.getTime() - fromTime.getTime());
-        const newDate = new Date();
-
-        newDate.setHours(differenceAsDate.getTime() / (1000 * 60 * 60));
-        newDate.setMinutes((differenceAsDate.getTime() / (1000 * 60)) % 60);
-
-        // only here, to set seconds to zero in order to split the label based on that
-        newDate.setSeconds(0);
-
-        return newDate;
-    }
-
-    private static isGivenDateNotToday(input: Date) {
-        const today = new Date();
-        return today.getDay() !== input.getDay()
-            || today.getMonth() !== input.getMonth()
-            || today.getFullYear() !== input.getFullYear();
-    }
-
     private static isBruttoArbeitszeitBelowMittagspausenLength(nettoArbeitszeit: Date, pausenlaengeInMinutes: number): boolean {
         return nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() <= pausenlaengeInMinutes;
     }
 
-    private static berechneNettoArbeitszeit(einstempelzeitFromUiInput: string,
-                                            ausstempelzeitFromUiInput: string,
-                                            pausenlaengeInMinutes: number): Date {
+    private static berechneNettoArbeitszeitFrom(einstempelzeitFromUiInput: string,
+                                                ausstempelzeitFromUiInput: string,
+                                                pausenlaengeInMinutes: number): Date {
         if (Util.isEmpty(einstempelzeitFromUiInput)
             || Util.isEmpty(ausstempelzeitFromUiInput)
             || Util.isNumberEmpty(pausenlaengeInMinutes)) {
             return;
         }
 
-        const einstempelzeitTime = MainCalcComponent.parseRawTime(einstempelzeitFromUiInput);
-        const ausstempelzeitTime = MainCalcComponent.parseRawTime(ausstempelzeitFromUiInput);
+        const einstempelzeitTime = TimeUtil.parseRawTime(einstempelzeitFromUiInput);
+        const ausstempelzeitTime = TimeUtil.parseRawTime(ausstempelzeitFromUiInput);
 
-        const bruttoArbeitszeit = MainCalcComponent.getTimeDifference(einstempelzeitTime, ausstempelzeitTime);
+        const bruttoArbeitszeit = TimeUtil.getTimeDifference(einstempelzeitTime, ausstempelzeitTime);
 
         const nettoArbeitszeit = bruttoArbeitszeit;
 
@@ -160,10 +129,10 @@ export class MainCalcComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        interval(this.TWENTY_SECONDS).subscribe(() => {
+        interval(this.TWENTY_SECONDS_IN_MS).subscribe(() => {
             if (this.isJetztOptionActivated) {
                 this.setAusstempelzeitFromInputToNow();
-                this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
+                this.berechneNettoArbeitszeit();
             }
         });
     }
@@ -205,7 +174,7 @@ export class MainCalcComponent implements OnInit {
 
     private berechneEverything(): void {
         this.berechneSollarbeitszeiten();
-        this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
+        this.berechneNettoArbeitszeit();
         this.berechneWasWareWennNettoArbeitszeit();
     }
 
@@ -214,31 +183,68 @@ export class MainCalcComponent implements OnInit {
             return;
         }
 
-        const einstempelzeitTime = MainCalcComponent.parseRawTime(this.einstempelzeitFromInput);
+        const einstempelzeitTime = TimeUtil.parseRawTime(this.einstempelzeitFromInput);
 
-        MainCalcComponent.addHoursAndMinutesTo(
-            this.sixHourWorkingTime, 6, this.pauseInMinutes, einstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(
-            this.eightHourWorkingTime, 8, this.pauseInMinutes, einstempelzeitTime);
-        MainCalcComponent.addHoursAndMinutesTo(
-            this.tenHourWorkingTime, 10, this.pauseInMinutes, einstempelzeitTime);
+        switch (this.selectedPausenregelung) {
+            case Pausenregelung.LAW: {
+                this.addHoursAndMinutesAccordingToLawPausenregelung(einstempelzeitTime);
+                break;
+            }
+            case Pausenregelung.CLASSIC: {
+                this.addHoursAndMinutesAccordingToClassicPausenregelung(einstempelzeitTime);
+                break;
+            }
+        }
 
-        MainCalcComponent.addHoursAndMinutesTo(
-            this.normalWorkingTime,
-            this.regelarbeitszeitPlusMittagspause.getHours(),
-            this.regelarbeitszeitPlusMittagspause.getMinutes(),
-            einstempelzeitTime);
+        this.setSollarbeitszeitsLabel();
+    }
 
-        this.sixHourWorkingLabel = this.convertDateToTimeString(this.sixHourWorkingTime);
-        this.regelArbeitszeitLabel = this.convertDateToTimeString(this.normalWorkingTime);
-        this.eightHourWorkingLabel = this.convertDateToTimeString(this.eightHourWorkingTime);
-        this.tenHourLabel = this.convertDateToTimeString(this.tenHourWorkingTime);
+    private setSollarbeitszeitsLabel() {
+        this.sixHourWorkingLabel = this.convertDateToTimeString(this.sechsNettostundenAusstempeluhrzeit);
+        this.regelarbeitszeitLabel = this.convertDateToTimeString(this.regelarbeitszeitAusstempeluhrzeit);
+        this.eightHourWorkingLabel = this.convertDateToTimeString(this.achtStundenAusstempeluhrzeit);
+        this.tenHourWorkingLabel = this.convertDateToTimeString(this.zehnStundenAusstempeluhrzeit);
 
         this.areSollarbeitszeitenBerechnet = true;
     }
 
+    private addHoursAndMinutesAccordingToLawPausenregelung(einstempelzeitTime: Date) {
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, 6, this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit,
+            this.sechsNettostundenAusstempeluhrzeit);
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, 8, this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit,
+            this.achtStundenAusstempeluhrzeit);
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, 10, this.gesetzlichePauseForOverNineOfBruttoArbeitszeit,
+            this.zehnStundenAusstempeluhrzeit);
+
+        const regelarbeitszeitMitPause = new Date();
+        regelarbeitszeitMitPause.setHours(this.regelarbeitszeitNetto.getHours());
+        regelarbeitszeitMitPause.setMinutes(this.regelarbeitszeitNetto.getMinutes());
+
+        if (TimeUtil.isBetween(this.regelarbeitszeitNetto, this.sixHoursAsDate, this.nineHoursAsDate)) {
+            regelarbeitszeitMitPause.setMinutes(
+                this.regelarbeitszeitNetto.getMinutes() + this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit);
+        } else {
+            regelarbeitszeitMitPause.setMinutes(
+                this.regelarbeitszeitNetto.getMinutes() + this.gesetzlichePauseForOverNineOfBruttoArbeitszeit);
+        }
+
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, regelarbeitszeitMitPause.getHours(), regelarbeitszeitMitPause.getMinutes(),
+            this.regelarbeitszeitAusstempeluhrzeit);
+    }
+
+    private addHoursAndMinutesAccordingToClassicPausenregelung(einstempelzeitTime: Date) {
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, 6, this.pauseInMinutes, this.sechsNettostundenAusstempeluhrzeit);
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, 8, this.pauseInMinutes, this.achtStundenAusstempeluhrzeit);
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime, 10, this.pauseInMinutes, this.zehnStundenAusstempeluhrzeit);
+
+        TimeUtil.addHoursAndMinutesTo(einstempelzeitTime,
+            this.regelarbeitszeitPlusMittagspause.getHours(),
+            this.regelarbeitszeitPlusMittagspause.getMinutes(),
+            this.regelarbeitszeitAusstempeluhrzeit);
+    }
+
     private berechneWasWareWennNettoArbeitszeit(): void {
-        const nettoArbeitszeit = MainCalcComponent.berechneNettoArbeitszeit(
+        const nettoArbeitszeit = MainCalcComponent.berechneNettoArbeitszeitFrom(
             this.wasWaereWennEinstempelzeitFromInput,
             this.wasWaereWennAusstempelzeitFromInput,
             Number(this.wasWaereWennPausenzeitFromInput));
@@ -253,29 +259,83 @@ export class MainCalcComponent implements OnInit {
         }
     }
 
-    private berechneNettoArbeitszeitWithDefaultPausenlaenge(): void {
-        const nettoArbeitszeit = MainCalcComponent.berechneNettoArbeitszeit(
-            this.einstempelzeitFromInput,
-            this.ausstempelzeitFromInput,
-            this.pauseInMinutes);
+    private berechneNettoArbeitszeit(): void {
+        const nettoArbeitszeit =
+            this.berechneNettoArbeitszeitConsideringPausenregelung(
+                this.einstempelzeitFromInput, this.ausstempelzeitFromInput, this.pauseInMinutes);
 
         if (Util.isObjectPresent(nettoArbeitszeit)) {
             this.isNettoArbeitszeitBerechnet = true;
             this.setNettoArbeitszeitLabelTo(nettoArbeitszeit);
-            this.showHelpForZeroNettoarbeitszeit = nettoArbeitszeit.getHours() === 0 && nettoArbeitszeit.getMinutes() === 0;
 
             this.tendenz = this.berechneTendenz(nettoArbeitszeit);
             this.setTendenzTimeLabelTo(this.tendenz.time);
         }
     }
 
+    private berechneNettoArbeitszeitConsideringPausenregelung(einstempelzeitFromUiInput: string,
+                                                              ausstempelzeitFromUiInput: string,
+                                                              pausenlaengeInMinutes: number): Date {
+        if (Util.isEmpty(einstempelzeitFromUiInput)
+            || Util.isEmpty(ausstempelzeitFromUiInput)
+            || Util.isNumberEmpty(pausenlaengeInMinutes)) {
+            return;
+        }
+
+        const einstempelzeitDate = TimeUtil.parseRawTime(einstempelzeitFromUiInput);
+        const ausstempelzeitDate = TimeUtil.parseRawTime(ausstempelzeitFromUiInput);
+
+        const bruttoArbeitszeitDate = TimeUtil.getTimeDifference(einstempelzeitDate, ausstempelzeitDate);
+
+        if (bruttoArbeitszeitDate.getHours() < this.SIX_HOURS) {
+            return bruttoArbeitszeitDate;
+        }
+
+        switch (this.selectedPausenregelung) {
+            case Pausenregelung.LAW: {
+                return this.calculateNettoarbeitszeitBerechnungForLawPausenregelung(bruttoArbeitszeitDate);
+            }
+            case Pausenregelung.CLASSIC: {
+                return this.calculateNettoarbeitszeitBerechnungForClassicPausenregelung(bruttoArbeitszeitDate, pausenlaengeInMinutes);
+            }
+        }
+    }
+
+    private calculateNettoarbeitszeitBerechnungForLawPausenregelung(bruttoArbeitszeit: Date): Date {
+        const nettoArbeitszeit = TimeUtil.copyDate(bruttoArbeitszeit);
+
+        if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursAsDate, this.sixHoursPlusGesetzlichePauseAsDate)) {
+            return this.sixHoursAsDate;
+        } else if (TimeUtil.isBetween(bruttoArbeitszeit, this.nineHoursAsDate, this.nineHoursPlusGesetzlichePauseAsDate)) {
+            // Während die Pausenzeit erweitert wird von 30m auf 45m bleibt die Nettoarbeitszeit gleich, also fix 9h - 30m
+            return this.nineHoursMinusFirstPartOfGesetzlichePauseAsDate;
+        } else if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursPlusGesetzlichePauseAsDate, this.nineHoursAsDate)) {
+            nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit);
+        } else if (TimeUtil.isAAfterOrEqualtToB(bruttoArbeitszeit, this.nineHoursPlusGesetzlichePauseAsDate)) {
+            nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - this.gesetzlichePauseForOverNineOfBruttoArbeitszeit);
+        }
+        return nettoArbeitszeit;
+    }
+
+    private calculateNettoarbeitszeitBerechnungForClassicPausenregelung(bruttoArbeitszeit: Date, pausenlaengeInMinutes: number): Date {
+        const nettoArbeitszeit = bruttoArbeitszeit;
+        const sixHoursPlusPause = TimeUtil.copyDate(this.sixHoursAsDate);
+        sixHoursPlusPause.setMinutes(sixHoursPlusPause.getMinutes() + this.pauseInMinutes);
+
+        if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursAsDate, sixHoursPlusPause)) {
+            return this.sixHoursAsDate;
+        } else {
+            nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - pausenlaengeInMinutes);
+            return nettoArbeitszeit;
+        }
+    }
+
     private berechneTendenz(nettoArbeitszeit: Date): Tendenz {
-        let tendenzTime = MainCalcComponent.getTimeDifference(
-            this.regelarbeitszeitNetto, nettoArbeitszeit);
+        let tendenzTime = TimeUtil.getTimeDifference(this.regelarbeitszeitNetto, nettoArbeitszeit);
         let richtung = Richtung.PLUS;
 
         if (this.isNettoArbeitszeitBelowRegelarbeitszeit(nettoArbeitszeit)) {
-            tendenzTime = MainCalcComponent.getTimeDifference(nettoArbeitszeit, this.regelarbeitszeitNetto);
+            tendenzTime = TimeUtil.getTimeDifference(nettoArbeitszeit, this.regelarbeitszeitNetto);
             richtung = Richtung.MINUS;
         }
 
@@ -288,19 +348,19 @@ export class MainCalcComponent implements OnInit {
                 nettoArbeitszeit.getMinutes() < this.regelarbeitszeitNetto.getMinutes());
     }
 
-    setNettoArbeitszeitLabelTo(newTime: Date): void {
+    public setNettoArbeitszeitLabelTo(newTime: Date): void {
         this.nettoArbeitszeitLabel = this.convertDateToTimeString(newTime);
     }
 
-    setWasWaereWennNettoArbeitszeitLabelTo(newTime: Date): void {
+    public setWasWaereWennNettoArbeitszeitLabelTo(newTime: Date): void {
         this.wasWaereWennNettoArbeitszeitLabel = this.convertDateToTimeString(newTime);
     }
 
-    setTendenzTimeLabelTo(newTime: Date): void {
+    public setTendenzTimeLabelTo(newTime: Date): void {
         this.tendenzLabel = this.convertDateToTimeString(newTime);
     }
 
-    setWasWaereWennTendenzLabelTo(newTime: Date): void {
+    public setWasWaereWennTendenzLabelTo(newTime: Date): void {
         this.wasWaereWennTendenzLabel = this.convertDateToTimeString(newTime);
     }
 
@@ -311,14 +371,14 @@ export class MainCalcComponent implements OnInit {
     public handleJetztOption(): void {
         if (!this.isJetztOptionActivated) {
             this.setAusstempelzeitFromInputToNow();
-            this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
+            this.berechneNettoArbeitszeit();
         }
     }
 
     public handleUserInputKeyPress(): void {
         this.saveEinstempelzeitToLocalStorage();
         this.berechneSollarbeitszeiten();
-        this.berechneNettoArbeitszeitWithDefaultPausenlaenge();
+        this.berechneNettoArbeitszeit();
         this.berechneWasWareWennNettoArbeitszeit();
     }
 
@@ -336,6 +396,7 @@ export class MainCalcComponent implements OnInit {
 
     public loadDefaultValuesFromLocalStorage(): boolean {
         const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
+        this.selectedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
         const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
 
         this.loadJetztOptionActivatedByDefault();
@@ -376,7 +437,7 @@ export class MainCalcComponent implements OnInit {
         const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
         const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
 
-        if (Util.isEmpty(einstempelzeitRaw) || MainCalcComponent.isGivenDateNotToday(new Date(lastUpdateOnEinstempelzeit))) {
+        if (Util.isEmpty(einstempelzeitRaw) || TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))) {
             localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
             localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
         } else {
@@ -390,12 +451,11 @@ export class MainCalcComponent implements OnInit {
     }
 
     private updateRegelarbeitszeit(taeglicheArbeitszeitString: string) {
-        this.regelarbeitszeitNetto = MainCalcComponent.parseRawTime(taeglicheArbeitszeitString);
-        MainCalcComponent.addHoursAndMinutesTo(
-            this.regelarbeitszeitPlusMittagspause, 0, this.pauseInMinutes, this.regelarbeitszeitNetto);
+        this.regelarbeitszeitNetto = TimeUtil.parseRawTime(taeglicheArbeitszeitString);
+        TimeUtil.addHoursAndMinutesTo(this.regelarbeitszeitNetto, 0, this.pauseInMinutes, this.regelarbeitszeitPlusMittagspause);
     }
 
-    public redirectPageTo(url: string): void {
+    public openNewTab(url: string): void {
         window.open(url);
     }
 

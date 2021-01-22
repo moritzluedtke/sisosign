@@ -28,10 +28,16 @@
             </div>
             <div fxLayout="row">
                 <div fxLayout="column">
-                    <label fxLayoutAlign="center">{{regelarbeitszeitNetto.getHours()}}h{{regelarbeitszeitNetto.getMinutes()}}m
-                        erreicht:</label>
+                    <label fxLayoutAlign="center">
+                        <span style="margin-right: 4px">{{regelarbeitszeitNetto.getHours()}}h</span>
+                        <span *ngIf="regelarbeitszeitNetto.getMinutes() !== 0"
+                              style="margin-right: 4px">
+                            {{regelarbeitszeitNetto.getMinutes()}}m
+                        </span>
+                        <span>erreicht:</span>
+                    </label>
                     <label fxLayoutAlign="center"
-                           class="mat-h2">{{ regelArbeitszeitLabel }}</label>
+                           class="mat-h2">{{ regelarbeitszeitLabel }}</label>
                 </div>
             </div>
             <div fxLayout="row">
@@ -48,7 +54,7 @@
                     <label fxLayoutAlign="center"
                            class="mat-h2"
                            style="color: #F00; margin-bottom: 0">
-                        {{ tenHourLabel }}
+                        {{ tenHourWorkingLabel }}
                     </label>
                 </div>
             </div>
@@ -100,11 +106,6 @@
                 <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
                     <label fxLayoutAlign="center"
                            class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
-                    <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
-                              *ngIf="showHelpForZeroNettoarbeitszeit"
-                              matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP }}">
-                        help_outline
-                    </mat-icon>
                 </div>
             </div>
 
@@ -200,16 +201,16 @@
             <mat-icon>settings</mat-icon>
         </button>
         <button mat-mini-fab color="primary"
-                matTooltip="{{ ISSUES_TOOLTIP }}" (click)="redirectPageTo(ISSUES_URL)">
+                matTooltip="{{ SOURCE_CODE_TOOLTIP }}" (click)="openNewTab(SOURCE_CODE_URL)">
+            <mat-icon>code</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary"
+                matTooltip="{{ ISSUES_TOOLTIP }}" (click)="openNewTab(ISSUES_URL)">
             <mat-icon>assignment_late</mat-icon>
         </button>
         <button mat-mini-fab color="primary"
-                matTooltip="{{ RELEASE_NOTES_TOOLTIP }}" (click)="redirectPageTo(RELEASE_NOTE_URL)">
+                matTooltip="{{ RELEASE_NOTES_TOOLTIP }}" (click)="openNewTab(RELEASE_NOTE_URL)">
             <mat-icon>notes</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary"
-                matTooltip="{{ SOURCE_CODE_TOOLTIP }}" (click)="redirectPageTo(SOURCE_CODE_URL)">
-            <mat-icon>code</mat-icon>
         </button>
         <button mat-mini-fab color="primary"
                 matTooltip="{{ WAS_WAERE_WENN_TOOLTIP }}" (click)="toggleWasWareWenn()">

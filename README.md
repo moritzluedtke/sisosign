@@ -2,7 +2,8 @@
 
 Developed by Moritz Lüdtke
 
-SISOSIGN is a work time calculator on the web.
+SISOSIGN is a work time calculator on the web. It is intentionally designed for the german market.
+
 Enjoy it in it's full glory [right here](https://sisosign.herokuapp.com/).
 
 ![SISOSIGN Screenshot](./readme-content/SISOSIGN-Screenshot.png "SISOSIGN Screenshot")
@@ -10,9 +11,21 @@ Enjoy it in it's full glory [right here](https://sisosign.herokuapp.com/).
 ## Local Development
 - `npm run serve` or `ng serve` runs it locally
 
+### Update Angular Version
+
+```shell
+npm uninstall -g @angular-cli
+npm install -g @angular/cli@latest
+
+ng update @angular/cli @angular/core
+
+npm install --legacy-peer-deps
+```
+
+
 ## Trivia
 
-1. If you want to know what SISOSIGN stands for, you have to look through the source code or ask a die hard fan ;)
+1. If you want to know what SISOSIGN stands for you have to take a look at the source code, look carefully through the ui or ask a die hard fan ;)
 2. SISOSIGN probably has more users than the developer assumes.
 
 ## Credits

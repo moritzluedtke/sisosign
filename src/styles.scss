@@ -25,3 +25,8 @@ simple-snack-bar {
     opacity: 0;
     transition: .9s ease-in-out all;
 }
+
+label.mat-radio-label {
+    white-space: normal;
+    align-items: normal;
+}
