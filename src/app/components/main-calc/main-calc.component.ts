@@ -282,46 +282,51 @@ export class MainCalcComponent implements OnInit {
             return;
         }
 
-        const einstempelzeitTime = TimeUtil.parseRawTime(einstempelzeitFromUiInput);
-        const ausstempelzeitTime = TimeUtil.parseRawTime(ausstempelzeitFromUiInput);
+        const einstempelzeitDate = TimeUtil.parseRawTime(einstempelzeitFromUiInput);
+        const ausstempelzeitDate = TimeUtil.parseRawTime(ausstempelzeitFromUiInput);
 
-        const bruttoArbeitszeit = TimeUtil.getTimeDifference(einstempelzeitTime, ausstempelzeitTime);
+        const bruttoArbeitszeitDate = TimeUtil.getTimeDifference(einstempelzeitDate, ausstempelzeitDate);
 
-        const nettoArbeitszeit = bruttoArbeitszeit;
-
-        if (bruttoArbeitszeit.getHours() < this.SIX_HOURS) {
-            return nettoArbeitszeit;
+        if (bruttoArbeitszeitDate.getHours() < this.SIX_HOURS) {
+            return bruttoArbeitszeitDate;
         }
 
         switch (this.selectedPausenregelung) {
             case Pausenregelung.LAW: {
-                if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursAsDate, this.sixHoursPlusGesetzlichePauseAsDate)) {
-                    return this.sixHoursAsDate;
-                } else if (TimeUtil.isBetween(bruttoArbeitszeit, this.nineHoursAsDate, this.nineHoursPlusGesetzlichePauseAsDate)) {
-                    // Während die Pausenzeit erweitert wird von 30m auf 45m bleibt die Nettoarbeitszeit gleich, also fix 9h - 30m
-                    return this.nineHoursMinusFirstPartOfGesetzlichePauseAsDate;
-                } else if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursPlusGesetzlichePauseAsDate, this.nineHoursAsDate)) {
-                    nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit);
-                } else if (TimeUtil.isAAfterOrEqualtToB(bruttoArbeitszeit, this.nineHoursPlusGesetzlichePauseAsDate)) {
-                    nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - this.gesetzlichePauseForOverNineOfBruttoArbeitszeit);
-                }
-                return nettoArbeitszeit;
+                return this.calculateNettoarbeitszeitBerechnungForLawPausenregelung(bruttoArbeitszeitDate);
             }
             case Pausenregelung.CLASSIC: {
-                const sixHoursPlusPause = new Date();
-                sixHoursPlusPause.setHours(this.sixHoursAsDate.getHours());
-                sixHoursPlusPause.setMinutes(this.sixHoursAsDate.getMinutes());
-                sixHoursPlusPause.setSeconds(this.sixHoursAsDate.getSeconds());
-
-                sixHoursPlusPause.setMinutes(sixHoursPlusPause.getMinutes() + this.pauseInMinutes);
-
-                if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursAsDate, sixHoursPlusPause)) {
-                    return this.sixHoursAsDate;
-                } else {
-                    nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - pausenlaengeInMinutes);
-                    return nettoArbeitszeit;
-                }
+                return this.calculateNettoarbeitszeitBerechnungForClassicPausenregelung(bruttoArbeitszeitDate, pausenlaengeInMinutes);
             }
+        }
+    }
+
+    private calculateNettoarbeitszeitBerechnungForLawPausenregelung(bruttoArbeitszeit: Date): Date {
+        const nettoArbeitszeit = TimeUtil.copyDate(bruttoArbeitszeit);
+
+        if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursAsDate, this.sixHoursPlusGesetzlichePauseAsDate)) {
+            return this.sixHoursAsDate;
+        } else if (TimeUtil.isBetween(bruttoArbeitszeit, this.nineHoursAsDate, this.nineHoursPlusGesetzlichePauseAsDate)) {
+            // Während die Pausenzeit erweitert wird von 30m auf 45m bleibt die Nettoarbeitszeit gleich, also fix 9h - 30m
+            return this.nineHoursMinusFirstPartOfGesetzlichePauseAsDate;
+        } else if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursPlusGesetzlichePauseAsDate, this.nineHoursAsDate)) {
+            nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit);
+        } else if (TimeUtil.isAAfterOrEqualtToB(bruttoArbeitszeit, this.nineHoursPlusGesetzlichePauseAsDate)) {
+            nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - this.gesetzlichePauseForOverNineOfBruttoArbeitszeit);
+        }
+        return nettoArbeitszeit;
+    }
+
+    private calculateNettoarbeitszeitBerechnungForClassicPausenregelung(bruttoArbeitszeit: Date, pausenlaengeInMinutes: number): Date {
+        const nettoArbeitszeit = bruttoArbeitszeit;
+        const sixHoursPlusPause = TimeUtil.copyDate(this.sixHoursAsDate);
+        sixHoursPlusPause.setMinutes(sixHoursPlusPause.getMinutes() + this.pauseInMinutes);
+
+        if (TimeUtil.isBetween(bruttoArbeitszeit, this.sixHoursAsDate, sixHoursPlusPause)) {
+            return this.sixHoursAsDate;
+        } else {
+            nettoArbeitszeit.setMinutes(bruttoArbeitszeit.getMinutes() - pausenlaengeInMinutes);
+            return nettoArbeitszeit;
         }
     }
 

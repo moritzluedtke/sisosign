@@ -75,4 +75,19 @@ export class TimeUtil {
                 && from.getMinutes() <= dateToCheck.getMinutes()
                 && dateToCheck.getMinutes() < to.getMinutes());
     }
+
+    /*
+     * Copies date and time.
+     */
+    static copyDate(copyFrom: Date): Date {
+        const newDate = new Date();
+
+        newDate.setDate(copyFrom.getDate());
+
+        newDate.setHours(copyFrom.getHours());
+        newDate.setMinutes(copyFrom.getMinutes());
+        newDate.setSeconds(copyFrom.getSeconds());
+
+        return newDate;
+    }
 }
