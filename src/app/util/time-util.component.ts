@@ -40,7 +40,7 @@ export class TimeUtil {
         resultingTime.setSeconds(baseTime.getSeconds());
     }
 
-    static isGivenDateNotToday(input: Date) {
+    static isNotToday(input: Date) {
         const today = new Date();
         return today.getDay() !== input.getDay()
             || today.getMonth() !== input.getMonth()
@@ -60,11 +60,19 @@ export class TimeUtil {
             (a.getHours() === b.getHours() && b.getMinutes() < a.getMinutes());
     }
 
+    static isAAfterOrEqualtToB(a: Date, b: Date) {
+        return b.getHours() < a.getHours() ||
+            (a.getHours() === b.getHours() && b.getMinutes() <= a.getMinutes());
+    }
+
     /*
     * Only checks hours and minutes.
+    * Incl. from; Exl. to
     */
-    static isBetween(date: Date, from: Date, to: Date) {
-        return (from.getHours() <= date.getHours() && date.getHours() < to.getHours())
-            || (from.getHours() === date.getHours() && from.getMinutes() <= date.getMinutes());
+    static isBetween(dateToCheck: Date, from: Date, to: Date) {
+        return (from.getHours() <= dateToCheck.getHours() && dateToCheck.getHours() < to.getHours())
+            || (from.getHours() === dateToCheck.getHours()
+                && from.getMinutes() <= dateToCheck.getMinutes()
+                && dateToCheck.getMinutes() < to.getMinutes());
     }
 }
