@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
 import { Util } from '../../util/util.component';
 import { TimeUtil } from '../../util/time-util.component';
+import { Pausenregelung } from '../../model/pausenregelung.model';
 
 @Component({
     selector: 'app-settings-dialog',
@@ -28,7 +29,7 @@ export class SettingsDialogComponent implements OnInit {
         this.taeglicheArbeitszeit = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
         this.taeglicheArbeitszeitInput = this.taeglicheArbeitszeit;
         this.pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
-        this.selectedPausenregelung = localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY);
+        this.selectedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
         this.isJetztOptionActivatedByDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
     }
 

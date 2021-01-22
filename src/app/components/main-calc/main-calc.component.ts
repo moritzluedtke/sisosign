@@ -396,12 +396,19 @@ export class MainCalcComponent implements OnInit {
 
     public loadDefaultValuesFromLocalStorage(): boolean {
         const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
-        this.selectedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
+        const savedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
         const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
 
         this.loadJetztOptionActivatedByDefault();
         this.loadWasWaereWennActivated();
         this.loadEinstempelzeit();
+
+        if (savedPausenregelung === undefined) {
+            this.selectedPausenregelung = Pausenregelung.CLASSIC;
+            this.savePausenregelungToLocalStorage();
+        } else {
+            this.selectedPausenregelung = savedPausenregelung;
+        }
 
         if (Util.isNotEmpty(pausenlaenge)
             && Util.isNotEmpty(taeglicheArbeitszeitString)) {
@@ -448,6 +455,10 @@ export class MainCalcComponent implements OnInit {
     private saveEinstempelzeitToLocalStorage() {
         localStorage.setItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY, this.einstempelzeitFromInput);
         localStorage.setItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY, new Date().toISOString());
+    }
+
+    private savePausenregelungToLocalStorage() {
+        localStorage.setItem(LocalStorageKeys.PAUSENREGELUNG_KEY, String(this.selectedPausenregelung));
     }
 
     private updateRegelarbeitszeit(taeglicheArbeitszeitString: string) {
