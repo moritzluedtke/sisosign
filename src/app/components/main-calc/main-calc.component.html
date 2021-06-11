@@ -1,20 +1,28 @@
 <div fxLayout="row" fxLayoutGap="48px" fxLayoutAlign="center top">
 
+    <!--    Sollarbeitszeit -->
     <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Sollarbeitszeit</h2>
 
         <div fxLayout="row"
              fxLayoutAlign="center" style="margin: 16px 0;">
-            <mat-form-field>
-                <input matInput
-                       type="time"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="einstempelzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Eingestempelt um">
-            </mat-form-field>
+            <div fxLayout="column">
+                <mat-form-field>
+                    <input matInput
+                           type="time"
+                           autocomplete="off"
+                           (input)="handleUserInputKeyPress()"
+                           [(ngModel)]="einstempelzeitFromInput"
+                           style="font-size: 1.4em"
+                           placeholder="Eingestempelt um">
+                </mat-form-field>
+                <button mat-raised-button color="accent" (click)="jetztEinstempeln()">
+                    <mat-icon>login</mat-icon>
+                    Jetzt einstempeln
+                </button>
+            </div>
         </div>
+
 
         <div *ngIf="areSollarbeitszeitenBerechnet"
              fxLayoutAlign="center center"
@@ -61,6 +69,7 @@
         </div>
     </mat-card>
 
+    <!--    Nettoarbeitszeit -->
     <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Nettoarbeitszeit</h2>
 
@@ -120,6 +129,7 @@
         </div>
     </mat-card>
 
+    <!--    WWW-Rechner -->
     <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px" *ngIf="isWasWaereWennActivated">
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Was wäre wenn?</h2>
 

@@ -30,7 +30,6 @@ export class MainCalcComponent implements OnInit {
     nineHoursPlusGesetzlichePauseAsDate = TimeUtil.parseRawTime(`09:${ this.additionalGesetzlichePauseAfterNineHours }`);
     nineHoursMinusFirstPartOfGesetzlichePauseAsDate =
         TimeUtil.parseRawTime(`08:${ this.gesetzlichePauseForSixToNineHoursOfBruttoArbeitszeit }`);
-    tenHoursAsDate = TimeUtil.parseRawTime('10:00');
 
     readonly RELEASE_NOTE_URL = 'https://github.com/moritzluedtke/sisosign/releases';
     readonly ISSUES_URL = 'https://github.com/moritzluedtke/sisosign/issues';
@@ -172,7 +171,8 @@ export class MainCalcComponent implements OnInit {
         this.ausstempelzeitFromInput = hoursWithLeadingZero + ':' + minutesWithLeadingZero;
     }
 
-    private berechneEverything(): void {
+    public berechneEverything(): void {
+        this.saveEinstempelzeitToLocalStorage();
         this.berechneSollarbeitszeiten();
         this.berechneNettoArbeitszeit();
         this.berechneWasWareWennNettoArbeitszeit();
@@ -376,10 +376,7 @@ export class MainCalcComponent implements OnInit {
     }
 
     public handleUserInputKeyPress(): void {
-        this.saveEinstempelzeitToLocalStorage();
-        this.berechneSollarbeitszeiten();
-        this.berechneNettoArbeitszeit();
-        this.berechneWasWareWennNettoArbeitszeit();
+        this.berechneEverything();
     }
 
     public openSettingsDialog(firstTime: boolean): void {
@@ -419,6 +416,13 @@ export class MainCalcComponent implements OnInit {
         }
 
         return false;
+    }
+
+    public jetztEinstempeln(): void {
+        const now = new Date();
+        now.setSeconds(0); // workaround to make convertDateToTimeString splitting on TIME_SPLIT_SEPERATOR work
+        this.einstempelzeitFromInput = this.convertDateToTimeString(now);
+        this.berechneEverything();
     }
 
     private loadJetztOptionActivatedByDefault() {
