@@ -40,6 +40,14 @@ export class TimeUtil {
         resultingTime.setSeconds(baseTime.getSeconds());
     }
 
+    static subtractHoursAndMinuteFrom(baseTime: Date, hoursToSubtract: number, minutesToSubtract: number, resultingTime: Date) {
+        resultingTime.setHours(baseTime.getHours() - hoursToSubtract);
+        resultingTime.setMinutes(baseTime.getMinutes() - minutesToSubtract);
+
+        // only here, to set seconds to zero in order to split the label based on that
+        resultingTime.setSeconds(baseTime.getSeconds());
+    }
+
     static isNotToday(input: Date) {
         const today = new Date();
         return today.getDay() !== input.getDay()

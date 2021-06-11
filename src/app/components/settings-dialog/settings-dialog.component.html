@@ -12,7 +12,7 @@
         </div>
 
         <div fxLayout="column" style="margin: 16px 16px 0 16px" *ngSwitchCase="false" fxLayoutGap="12px">
-            <mat-form-field>
+            <mat-form-field style="max-width: 200px" fxLayoutAlign="center">
                 <input matInput
                        type="time"
                        [(ngModel)]="taeglicheArbeitszeitInput"
@@ -23,30 +23,50 @@
             </mat-form-field>
 
             <div>
-                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault">
+                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault" fxLayoutAlign="center">
                     Jetzt-Option standardmäßig aktivieren
                 </mat-checkbox>
             </div>
 
-            <div>
-                <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Pausenregelung</p>
+            <div fxLayout="row">
+                <div>
+                    <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Pausenregelung</p>
 
-                <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung">
-                    <mat-radio-button class="custom-radio-button" value="LAW">Mindestlänge nach gesetzlicher Regelung</mat-radio-button>
-                    <mat-radio-button class="custom-radio-button" value="CLASSIC">
-                        <mat-label style="margin-bottom: 12px;">Classic</mat-label>
-                        <mat-form-field>
-                            <input matInput
-                                   [disabled]="selectedPausenregelung!=='CLASSIC'"
-                                   type="number"
-                                   [(ngModel)]="pausenlaenge"
-                                   (keyup.enter)="saveAndClose()"
-                                   style="font-size: 1.4em"
-                                   placeholder="Pausenlänge (in Min.)">
-                        </mat-form-field>
+                    <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung">
+                        <mat-radio-button class="custom-radio-button" style="max-width: 200px" value="LAW">Mindestlänge nach gesetzlicher Regelung</mat-radio-button>
+                        <mat-radio-button class="custom-radio-button" value="CLASSIC">
+                            <mat-label style="margin-bottom: 12px;">Classic</mat-label>
+                            <mat-form-field >
+                                <input matInput
+                                       [disabled]="selectedPausenregelung==='LAW'"
+                                       type="number"
+                                       [(ngModel)]="pausenlaenge"
+                                       (keyup.enter)="saveAndClose()"
+                                       style="font-size: 1.4em; margin-top: 2px;"
+                                       placeholder="Pausenlänge (in Min.)">
+                            </mat-form-field>
 
-                    </mat-radio-button>
-                </mat-radio-group>
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div>
+                    <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Einstempeln</p>
+
+                    <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedEinstempelVerhalten">
+                        <mat-radio-button class="custom-radio-button" value="AUTOMATIC">Automatisch</mat-radio-button>
+                        <mat-radio-button class="custom-radio-button" value="MANUAL">Manuell</mat-radio-button>
+                    </mat-radio-group>
+
+                    <mat-form-field>
+                        <input matInput
+                               type="number"
+                               [(ngModel)]="einstempelZurueckdatierungInMinuten"
+                               (keyup.enter)="saveAndClose()"
+                               style="font-size: 1.4em; margin-top: 2px"
+                               placeholder="Zurückdatieren um (in Min.)">
+                    </mat-form-field>
+                </div>
             </div>
 
             <div fxLayoutAlign="center">
@@ -58,7 +78,8 @@
             </div>
 
             <label style="font-size: 12px; margin-top: 20px; color: darkgrey">
-                <i>Deine hier eingegebenen Daten werden ausschließlich lokal im Browser gespeichert und sind frei von personenbezogenen Daten.</i>
+                <i>Deine hier eingegebenen Daten werden ausschließlich lokal im Browser gespeichert und sind frei von personenbezogenen
+                    Daten.</i>
             </label>
         </div>
     </div>

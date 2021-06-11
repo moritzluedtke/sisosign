@@ -4,6 +4,7 @@ import { LocalStorageKeys } from '../../global-constants/local-storage-keys.mode
 import { Util } from '../../util/util.component';
 import { TimeUtil } from '../../util/time-util.component';
 import { Pausenregelung } from '../../model/pausenregelung.model';
+import { Einstempelverhalten } from '../../model/einstempelverhalten.model';
 
 @Component({
     selector: 'app-settings-dialog',
@@ -14,9 +15,11 @@ export class SettingsDialogComponent implements OnInit {
     taeglicheArbeitszeitInput: string;
     taeglicheArbeitszeit: string;
     pausenlaenge: string;
+    einstempelZurueckdatierungInMinuten: string;
     firstTime: boolean;
     isJetztOptionActivatedByDefault: boolean;
     selectedPausenregelung: string;
+    selectedEinstempelVerhalten: string;
     lowerArbeitszeitLimit = TimeUtil.parseRawTime('06:00');
     upperArbeitszeitLimit = TimeUtil.parseRawTime('10:00');
 
@@ -30,7 +33,9 @@ export class SettingsDialogComponent implements OnInit {
         this.taeglicheArbeitszeitInput = this.taeglicheArbeitszeit;
         this.pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
         this.selectedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
+        this.selectedEinstempelVerhalten = Einstempelverhalten[localStorage.getItem(LocalStorageKeys.EINSTEMEPELVERHALTEN)];
         this.isJetztOptionActivatedByDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
+        this.einstempelZurueckdatierungInMinuten = localStorage.getItem(LocalStorageKeys.EINSTEMPEL_ZURUECKDATIERUNG_IN_MINUTEN_KEY);
     }
 
     public saveAndClose() {
@@ -38,6 +43,8 @@ export class SettingsDialogComponent implements OnInit {
         localStorage.setItem(LocalStorageKeys.PAUSENLAENGE_KEY, this.pausenlaenge);
         localStorage.setItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY, String(this.isJetztOptionActivatedByDefault));
         localStorage.setItem(LocalStorageKeys.PAUSENREGELUNG_KEY, String(this.selectedPausenregelung));
+        localStorage.setItem(LocalStorageKeys.EINSTEMEPELVERHALTEN, String(this.selectedEinstempelVerhalten));
+        localStorage.setItem(LocalStorageKeys.EINSTEMPEL_ZURUECKDATIERUNG_IN_MINUTEN_KEY, this.einstempelZurueckdatierungInMinuten);
 
         this.dialogRef.close();
     }
