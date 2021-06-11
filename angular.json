@@ -18,7 +18,6 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -29,17 +28,24 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "prod": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -52,19 +58,24 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "local": {
+              "optimization": false
             }
-          }
+          },
+          "defaultConfiguration": "prod"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "SISOSIG:build"
-          },
           "configurations": {
-            "production": {
-              "browserTarget": "SISOSIG:build:production"
+            "local": {
+              "browserTarget": "SISOSIG:build:local"
+            },
+            "prod": {
+              "browserTarget": "SISOSIG:build:prod"
             }
-          }
+          },
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -106,15 +117,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "SISOSIG:serve"
+            "devServerTarget": "SISOSIG:serve:local"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "SISOSIG:serve:production"
+            "prod": {
+              "devServerTarget": "SISOSIG:serve:prod"
             }
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "SISOSIG"
 }

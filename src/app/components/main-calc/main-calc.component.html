@@ -1,20 +1,32 @@
-<div fxLayout="row" fxLayoutGap="48px" fxLayoutAlign="center top">
+<!--    Global Shortcuts -->
+<div (window:keydown.s)="openSettingsDialog(false)"></div>
+<div (window:keydown.e)="jetztEinstempeln()" *ngIf="!isEinstempelverhaltenAutomatic()"></div>
+<div (window:keydown.w)="toggleWasWareWenn()"></div>
 
+<div fxLayout="row" fxLayoutGap="48px" fxLayoutAlign="center top">
+    <!--    Sollarbeitszeit -->
     <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Sollarbeitszeit</h2>
 
         <div fxLayout="row"
              fxLayoutAlign="center" style="margin: 16px 0;">
-            <mat-form-field>
+            <mat-form-field style=" max-width: 144px">
                 <input matInput
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="einstempelzeitFromInput"
-                       style="font-size: 1.4em"
+                       [(ngModel)]="einstempelzeitInput"
+                       style="font-size: 1.4em;"
                        placeholder="Eingestempelt um">
             </mat-form-field>
+            <button mat-raised-button color="accent" (click)="jetztEinstempeln()"
+                    [disabled]="isEinstempelverhaltenAutomatic()"
+                    matTooltip="{{ JETZT_EINSTEMPELN_TOOLTIP }}"
+                    style="min-width: 30px; max-height: 42px; padding: 2px; margin-top: 8px; margin-left: 8px">
+                <mat-icon>login</mat-icon>
+            </button>
         </div>
+
 
         <div *ngIf="areSollarbeitszeitenBerechnet"
              fxLayoutAlign="center center"
@@ -61,6 +73,7 @@
         </div>
     </mat-card>
 
+    <!--    Nettoarbeitszeit -->
     <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Nettoarbeitszeit</h2>
 
@@ -71,7 +84,7 @@
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="einstempelzeitFromInput"
+                       [(ngModel)]="einstempelzeitInput"
                        style="font-size: 1.4em"
                        placeholder="Eingestempelt um">
             </mat-form-field>
@@ -83,7 +96,7 @@
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="ausstempelzeitFromInput"
+                       [(ngModel)]="ausstempelzeitInput"
                        [disabled]="isJetztOptionActivated"
                        style="font-size: 1.4em"
                        placeholder="Ausgestempelt um">
@@ -120,6 +133,7 @@
         </div>
     </mat-card>
 
+    <!--    WWW-Rechner -->
     <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px" *ngIf="isWasWaereWennActivated">
         <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Was wäre wenn?</h2>
 
