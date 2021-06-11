@@ -11,16 +11,23 @@ Enjoy it in it's full glory [right here](https://sisosign.herokuapp.com/).
 ## Local Development
 - `npm run serve` or `ng serve` runs it locally
 
-### Update Angular Version
+### Update Angular Version via Angular CLI
 
 ```shell
 npm uninstall -g @angular-cli
 npm install -g @angular/cli@latest
 
+rm -rf node_modules # otherwise the angular-cli install from node_modules will be prioritized
+npm uninstall --save-dev @angular/cli --legacy-peer-deps
+npm install --save-dev @angular/cli@latest --legacy-peer-deps
+
+# set HTTP_PROXY and HTTPS_PROXY to empty or the proxy address
 ng update @angular/cli @angular/core
 
 npm install --legacy-peer-deps
 ```
+
+### Tipps
 
 
 ## Trivia
