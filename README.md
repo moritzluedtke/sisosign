@@ -22,7 +22,7 @@ npm uninstall --save-dev @angular/cli --legacy-peer-deps
 npm install --save-dev @angular/cli@latest --legacy-peer-deps
 
 # set HTTP_PROXY and HTTPS_PROXY to empty or the proxy address
-ng update @angular/cli @angular/core
+ng update @angular/cli @angular/core --force
 
 npm install --legacy-peer-deps
 ```
