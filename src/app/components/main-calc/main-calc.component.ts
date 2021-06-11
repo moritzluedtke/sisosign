@@ -417,6 +417,7 @@ export class MainCalcComponent implements OnInit {
         const newEinstempelzeit = new Date();
 
         TimeUtil.subtractHoursAndMinuteFrom(now, 0, this.einstempelZurueckdatierungInMinutes, newEinstempelzeit);
+
         this.einstempelzeitInput = this.convertDateToTimeString(newEinstempelzeit);
     }
 
@@ -471,13 +472,14 @@ export class MainCalcComponent implements OnInit {
         const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
         const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
 
-        if (TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))) {
+        if (Util.isEmpty(einstempelzeitRaw) || TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))) {
             localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
             localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+        }
 
-            if (this.selectedEinstempelverhalten === Einstempelverhalten.AUTOMATIC) {
+        if (TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))
+            && this.selectedEinstempelverhalten === Einstempelverhalten.AUTOMATIC) {
                 this.setEinstempelzeitToNow();
-            }
         } else {
             this.einstempelzeitInput = einstempelzeitRaw;
         }
@@ -487,6 +489,9 @@ export class MainCalcComponent implements OnInit {
         const einstempelverhalten = Einstempelverhalten[localStorage.getItem(LocalStorageKeys.EINSTEMEPELVERHALTEN)];
 
         if (einstempelverhalten === undefined) {
+            this.selectedEinstempelverhalten = Einstempelverhalten.MANUAL
+            this.einstempelZurueckdatierungInMinutes = 0;
+
             localStorage.setItem(LocalStorageKeys.EINSTEMEPELVERHALTEN, Einstempelverhalten.MANUAL);
             localStorage.setItem(LocalStorageKeys.EINSTEMPEL_ZURUECKDATIERUNG_IN_MINUTEN_KEY, '0');
         } else {
