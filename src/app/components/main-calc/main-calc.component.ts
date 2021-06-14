@@ -96,13 +96,8 @@ export class MainCalcComponent implements OnInit {
                 private appRef: ApplicationRef) {
         this.showNewVersionSnackbar();
 
-        console.log('constructor');
-        console.log('einstempelzeit: ' + this.einstempelzeitInput);
-
         if (this.loadDefaultValuesFromLocalStorage()) {
-            console.log('einstempelzeit: ' + this.einstempelzeitInput);
             this.berechneEverything();
-            console.log('einstempelzeit: ' + this.einstempelzeitInput);
         } else {
             this.openSettingsDialog(true);
         }
