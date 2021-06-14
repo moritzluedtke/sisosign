@@ -471,17 +471,17 @@ export class MainCalcComponent implements OnInit {
     private loadEinstempelzeit() {
         const einstempelzeitRaw = localStorage.getItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
         const lastUpdateOnEinstempelzeit = localStorage.getItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+        this.einstempelzeitInput = einstempelzeitRaw;
 
         if (Util.isEmpty(einstempelzeitRaw) || TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))) {
             localStorage.removeItem(LocalStorageKeys.EINSTEMPELZEIT_RAW_KEY);
             localStorage.removeItem(LocalStorageKeys.LAST_UPDATE_ON_EINSTEMPELZEIT_KEY);
+            this.einstempelzeitInput = '';
         }
 
-        if (TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))
-            && this.selectedEinstempelverhalten === Einstempelverhalten.AUTOMATIC) {
+        if (this.selectedEinstempelverhalten === Einstempelverhalten.AUTOMATIC
+            && TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))) {
                 this.setEinstempelzeitToNow();
-        } else {
-            this.einstempelzeitInput = einstempelzeitRaw;
         }
     }
 
