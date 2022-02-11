@@ -4,7 +4,7 @@ Developed by Moritz Lüdtke
 
 SISOSIGN is a work time calculator on the web. It is intentionally designed for the german market.
 
-Enjoy it in it's full glory [right here](https://sisosign.herokuapp.com/).
+Enjoy it in its full glory [right here](https://sisosign.herokuapp.com/).
 
 ![SISOSIGN Screenshot](./readme-content/SISOSIGN-Screenshot.png "SISOSIGN Screenshot")
 
