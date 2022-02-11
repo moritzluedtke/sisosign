@@ -13,22 +13,13 @@ Enjoy it in its full glory [right here](https://sisosign.herokuapp.com/).
 
 ### Update Angular Version via Angular CLI
 
-```shell
-npm uninstall -g @angular-cli
-npm install -g @angular/cli@latest
+#### Preferred
 
-rm -rf node_modules # otherwise the angular-cli install from node_modules will be prioritized
-npm uninstall --save-dev @angular/cli --legacy-peer-deps
-npm install --save-dev @angular/cli@latest --legacy-peer-deps
+https://update.angular.io/
 
-# set HTTP_PROXY and HTTPS_PROXY to empty or the proxy address
-ng update @angular/cli @angular/core --force
+#### May also work
 
-npm install --legacy-peer-deps
-```
-
-### Tipps
-
+Run the `./update-angular.sh` script.
 
 ## Trivia
 

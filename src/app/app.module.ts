@@ -20,9 +20,6 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
         CustomMaterialModule,
         FlexLayoutModule
     ],
-    entryComponents: [
-        SettingsDialogComponent
-    ],
     providers: [],
     bootstrap: [ AppComponent ]
 })
