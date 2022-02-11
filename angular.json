@@ -37,7 +37,6 @@
               ],
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "optimization": {
                 "scripts": true,
                 "styles": {
