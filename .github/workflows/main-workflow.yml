@@ -24,9 +24,9 @@ jobs:
 
       - name: Lint & build the app
         run: |
+          touch myfile.txt
 #          npm ci
 #          npm run build:ci
-          touch myfile.txt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
