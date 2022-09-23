@@ -9,15 +9,18 @@ on:
 jobs:
   build-project:
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [ 18.9.1 ]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 18.9.1
+          node-version: ${{ matrix.node-version }}
 
       - name: Lint & build the app
         run: |
@@ -40,9 +43,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: webapp-artifact
+          path: dist/
 
       - name: Bundle webapp files
-        run: tar cfvz artifact.tar .
+        # Workaround needed in order for `tar` to function properly (don't create archive in same folder as files)
+        run: |
+          cd dist/
+          tar cfvz ../artifact.tar .
 
       - name: Upload to GitHub Pages
         uses: actions/upload-artifact@v1
