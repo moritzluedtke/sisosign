@@ -46,16 +46,17 @@ jobs:
           path: dist/
 
       - name: Bundle webapp files
-        # Workaround needed in order for `tar` to function properly (don't create archive in same folder as files)
         run: |
-          cd dist/
-          tar cfvz ../artifact.tar .
+          tar -C dist/ -cvf artifact.tar .
+          tar --list -f artifact.tar
+          tar cvzf artifact.gz
 
       - name: Upload to GitHub Pages
         uses: actions/upload-artifact@v1
         with:
           name: github-pages
-          path: artifact.tar
+          # path: ${{ runner.temp }}/artifact.tar
+          path: artifact.gz
 
   deploy-on-github-pages:
     runs-on: ubuntu-latest
