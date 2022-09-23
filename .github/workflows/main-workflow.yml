@@ -50,8 +50,8 @@ jobs:
 
       - name: Bundle webapp files
         run: |
-          tar -C dist/ -cvzf artifact.tar .
-          tar --list -f artifact.tar
+          tar -C dist/ -cvzf artifact.gz .
+          tar --list -f artifact.gz
 
       - name: Upload to GitHub Pages
         uses: actions/upload-artifact@v1
