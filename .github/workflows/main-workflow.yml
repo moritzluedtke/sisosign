@@ -24,11 +24,11 @@ jobs:
 
       - name: Lint & build the app
         run: |
+          npm ci
+          npm run build:ci
 #          mkdir -p dist/SISOSIGN
 #          cd dist/SISOSIGN
 #          touch myfile.txt
-          npm ci
-          npm run build:ci
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
