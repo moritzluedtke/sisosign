@@ -24,6 +24,8 @@ jobs:
 
       - name: Lint & build the app
         run: |
+          mkdir -P dist/SISOSIGN
+          cd dist/SISOSIGN
           touch myfile.txt
 #          npm ci
 #          npm run build:ci
