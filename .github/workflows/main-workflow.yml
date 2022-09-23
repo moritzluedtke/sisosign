@@ -11,22 +11,14 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [ 18.x ]
+        node-version: [ 18.9.1 ]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+        uses: actions/checkout@v3
 
       - name: Setup Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -55,5 +47,7 @@ jobs:
 
       - name: Deploy Project
         run: |
+          ls -la
+          echo "===================================="
           ls -R
           
