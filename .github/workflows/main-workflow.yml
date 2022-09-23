@@ -9,18 +9,15 @@ on:
 jobs:
   build-project:
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        node-version: [ 18.9.1 ]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node ${{ matrix.node-version }}
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.9.1
 
       - name: Lint & build the app
         run: |
