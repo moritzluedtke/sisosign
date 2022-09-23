@@ -33,7 +33,7 @@ jobs:
           name: webapp-artifact
           path: dist/SISOSIGN/**
 
-  deploy-project:
+  upload-to-github-pages:
     runs-on: ubuntu-latest
     needs: build-project
 #    if: github.ref == 'refs/heads/master'
@@ -43,11 +43,30 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: webapp-artifact
-          path: dist/
 
-      - name: Deploy Project
-        run: |
-          ls -la
-          echo "===================================="
-          ls -R
-          
+      - name: Bundle webapp files
+        run: tar cfvz artifact.tar .
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-artifact@v1
+        with:
+          name: github-pages
+          path: artifact.tar
+
+  deploy-on-github-pages:
+    runs-on: ubuntu-latest
+    needs: upload-to-github-pages
+    #    if: github.ref == 'refs/heads/master'
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
