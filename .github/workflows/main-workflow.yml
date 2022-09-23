@@ -24,11 +24,11 @@ jobs:
 
       - name: Lint & build the app
         run: |
-          mkdir -p dist/SISOSIGN
-          cd dist/SISOSIGN
-          touch myfile.txt
-#          npm ci
-#          npm run build:ci
+#          mkdir -p dist/SISOSIGN
+#          cd dist/SISOSIGN
+#          touch myfile.txt
+          npm ci
+          npm run build:ci
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -50,9 +50,8 @@ jobs:
 
       - name: Bundle webapp files
         run: |
-          tar -C dist/ -cvf artifact.tar .
+          tar -C dist/ -cvzf artifact.tar .
           tar --list -f artifact.tar
-#          tar cvzf artifact.gz
 
       - name: Upload to GitHub Pages
         uses: actions/upload-artifact@v1
