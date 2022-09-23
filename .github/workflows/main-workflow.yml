@@ -48,17 +48,17 @@ jobs:
           name: webapp-artifact
           path: dist/
 
-      - name: Bundle webapp files
-        run: |
-          tar -C dist/ -cvzf artifact.gz .
-          tar --list -f artifact.gz
+#      - name: Bundle webapp files
+#        run: |
+#          tar -C dist/ -cvzf artifact.gz .
+#          tar --list -f artifact.gz
 
       - name: Upload to GitHub Pages
         uses: actions/upload-artifact@v1
         with:
           name: github-pages
           # path: ${{ runner.temp }}/artifact.tar
-          path: artifact.gz
+          path: dist/
 
   deploy-on-github-pages:
     runs-on: ubuntu-latest
