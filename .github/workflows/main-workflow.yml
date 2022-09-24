@@ -36,44 +36,50 @@ jobs:
           name: webapp-artifact
           path: dist/SISOSIGN/**
 
-  upload-to-github-pages:
-    runs-on: ubuntu-latest
-    needs: build-project
-#    if: github.ref == 'refs/heads/master'
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: webapp-artifact
-          path: dist/
-
-#      - name: Bundle webapp files
-#        run: |
-#          tar -C dist/ -cvzf artifact.gz .
-#          tar --list -f artifact.gz
-
-      - name: Upload to GitHub Pages
-        uses: actions/upload-artifact@v1
-        with:
-          name: github-pages
-          # path: ${{ runner.temp }}/artifact.tar
-          path: ./dist
+#  upload-to-github-pages:
+#    runs-on: ubuntu-latest
+#    needs: build-project
+##    if: github.ref == 'refs/heads/master'
+#
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: webapp-artifact
+#          path: dist/
+#
+##      - name: Bundle webapp files
+##        run: |
+##          tar -C dist/ -cvzf artifact.gz .
+##          tar --list -f artifact.gz
+#
+#      - name: Upload to GitHub Pages
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: github-pages
+#          # path: ${{ runner.temp }}/artifact.tar
+#          path: dist/
 
   deploy-on-github-pages:
     runs-on: ubuntu-latest
-    needs: upload-to-github-pages
+    needs: build-project
     #    if: github.ref == 'refs/heads/master'
 
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
+#    permissions:
+#      pages: write      # to deploy to Pages
+#      id-token: write   # to verify the deployment originates from an appropriate source
 
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v1
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: dist/
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@main
