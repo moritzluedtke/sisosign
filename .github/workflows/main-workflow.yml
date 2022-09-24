@@ -33,7 +33,7 @@ jobs:
   deploy-on-github-pages:
     runs-on: ubuntu-latest
     needs: build-project
-    #    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
 
     permissions:
       pages: write      # to deploy to Pages
