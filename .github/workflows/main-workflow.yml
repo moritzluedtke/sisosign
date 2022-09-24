@@ -65,9 +65,9 @@ jobs:
     needs: build-project
     #    if: github.ref == 'refs/heads/master'
 
-#    permissions:
-#      pages: write      # to deploy to Pages
-#      id-token: write   # to verify the deployment originates from an appropriate source
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
 
     environment:
       name: github-pages
