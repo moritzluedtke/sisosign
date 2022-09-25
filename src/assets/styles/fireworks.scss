@@ -1,4 +1,5 @@
 @use "sass:list";
+@use "sass:math";
 
 $particles: 75;
 $width: 575;
@@ -9,8 +10,8 @@ $box-shadow: ();
 $box-shadow2: ();
 @for $i from 0 through $particles {
     $box-shadow: $box-shadow,
-    list.slash(random($width)-$width, 2 + px)
-    list.slash(random($height)-$height, 1.2 + px)
+    random($width)-$width / 2 + px
+    random($height)-$height / 1.2 + px
     hsl(random(360), 100%, 50%);
     $box-shadow2: $box-shadow2, 0 0 #fff
 }

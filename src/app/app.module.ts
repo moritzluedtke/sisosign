@@ -7,6 +7,7 @@ import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { SettingsDialogComponent } from './components/settings-dialog/settings-d
         BrowserModule,
         BrowserAnimationsModule,
         CustomMaterialModule,
-        FlexLayoutModule
+        FlexLayoutModule,
+        ReactiveFormsModule,
     ],
     providers: [],
     bootstrap: [ AppComponent ]

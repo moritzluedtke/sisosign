@@ -15,7 +15,7 @@
             <mat-form-field style="max-width: 200px" fxLayoutAlign="center">
                 <input matInput
                        type="time"
-                       [(ngModel)]="taeglicheArbeitszeitInput"
+                       [formControl]="taeglicheArbeitszeitFormFieldControl"
                        style="font-size: 1.4em"
                        (change)="checkForIllegalArbeitszeitInput()"
                        placeholder="Tägliche Arbeitszeit (hh:mm)">
@@ -32,20 +32,20 @@
                 <div>
                     <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Pausenregelung</p>
 
-                    <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung">
-                        <mat-radio-button class="custom-radio-button" style="max-width: 200px" value="LAW">Mindestlänge nach gesetzlicher Regelung</mat-radio-button>
+                    <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung" (change)="onPausenregelungChange()">
+                        <mat-radio-button class="custom-radio-button" style="max-width: 200px" value="LAW">
+                            Mindestlänge nach gesetzlicher Regelung
+                        </mat-radio-button>
                         <mat-radio-button class="custom-radio-button" value="CLASSIC">
                             <mat-label style="margin-bottom: 12px;">Classic</mat-label>
-                            <mat-form-field >
+                            <mat-form-field>
                                 <input matInput
-                                       [disabled]="selectedPausenregelung==='LAW'"
                                        type="number"
-                                       [(ngModel)]="pausenlaenge"
+                                       [formControl]="pausenlaengeFormFieldControl"
                                        (keyup.enter)="saveAndClose()"
                                        style="font-size: 1.4em; margin-top: 2px;"
                                        placeholder="Pausenlänge (in Min.)">
                             </mat-form-field>
-
                         </mat-radio-button>
                     </mat-radio-group>
                 </div>
