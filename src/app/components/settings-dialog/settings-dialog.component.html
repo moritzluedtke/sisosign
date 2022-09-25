@@ -70,9 +70,11 @@
             </div>
 
             <div fxLayoutAlign="center">
-                <button mat-raised-button (click)="saveAndClose()"
+                <button mat-raised-button
+                        (click)="saveAndClose()"
                         [disabled]="isAnyInputInvalid()"
-                        color="accent" style="margin-bottom: 12px;">
+                        color="accent"
+                        style="margin-bottom: 12px;">
                     Speichern
                 </button>
             </div>

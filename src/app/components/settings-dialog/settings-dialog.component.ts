@@ -32,12 +32,14 @@ export class SettingsDialogComponent implements OnInit {
     ngOnInit(): void {
         this.pausenlaengeFormFieldControl = new FormControl('', [ Validators.required ]);
         this.taeglicheArbeitszeitFormFieldControl = new FormControl('', [ Validators.required ]);
-        this.pausenlaengeFormFieldControl.markAsTouched();
-        this.taeglicheArbeitszeitFormFieldControl.markAsTouched();
+        if (this.firstTime) {
+            this.pausenlaengeFormFieldControl.markAsTouched();
+            this.taeglicheArbeitszeitFormFieldControl.markAsTouched();
+        }
 
         this.taeglicheArbeitszeit = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
         this.taeglicheArbeitszeitFormFieldControl.setValue(this.taeglicheArbeitszeit);
-        this.pausenlaengeFormFieldControl.setValue(localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY));
+        this.pausenlaengeFormFieldControl.setValue(JSON.parse(localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY)));
         this.selectedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
         this.selectedEinstempelVerhalten = Einstempelverhalten[localStorage.getItem(LocalStorageKeys.EINSTEMEPELVERHALTEN)];
         this.isJetztOptionActivatedByDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
@@ -45,6 +47,8 @@ export class SettingsDialogComponent implements OnInit {
     }
 
     public onPausenregelungChange() {
+        this.pausenlaengeFormFieldControl.markAsTouched();
+
         if (this.selectedPausenregelung == 'LAW') {
             this.pausenlaengeFormFieldControl.disable()
         } else {
@@ -53,8 +57,8 @@ export class SettingsDialogComponent implements OnInit {
     }
 
     public saveAndClose() {
-        localStorage.setItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY, this.taeglicheArbeitszeit);
-        localStorage.setItem(LocalStorageKeys.PAUSENLAENGE_KEY, this.pausenlaengeFormFieldControl.value);
+        localStorage.setItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY, String(this.taeglicheArbeitszeit));
+        localStorage.setItem(LocalStorageKeys.PAUSENLAENGE_KEY, String(this.pausenlaengeFormFieldControl.value));
         localStorage.setItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY, String(this.isJetztOptionActivatedByDefault));
         localStorage.setItem(LocalStorageKeys.PAUSENREGELUNG_KEY, String(this.selectedPausenregelung));
         localStorage.setItem(LocalStorageKeys.EINSTEMEPELVERHALTEN, String(this.selectedEinstempelVerhalten));
@@ -65,7 +69,7 @@ export class SettingsDialogComponent implements OnInit {
 
     public isAnyInputInvalid(): boolean {
         return Util.isEmpty(this.taeglicheArbeitszeitFormFieldControl.value)
-            || (Util.isEmpty(this.pausenlaengeFormFieldControl.value) && this.selectedPausenregelung == Pausenregelung.CLASSIC);
+            || (Util.isEmpty(this.pausenlaengeFormFieldControl.value) && this.selectedPausenregelung === Pausenregelung.CLASSIC);
     }
 
     public checkForIllegalArbeitszeitInput() {
