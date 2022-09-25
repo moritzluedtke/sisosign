@@ -223,6 +223,10 @@
             <mat-icon>assignment_late</mat-icon>
         </button>
         <button mat-mini-fab color="primary"
+                matTooltip="{{ E_MAIL_TOOLTIP }}" (click)="openMailTo()">
+            <mat-icon>mail</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary"
                 matTooltip="{{ RELEASE_NOTES_TOOLTIP }}" (click)="openNewTab(RELEASE_NOTE_URL)">
             <mat-icon>notes</mat-icon>
         </button>

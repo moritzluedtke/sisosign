@@ -30,6 +30,7 @@ export class MainCalcComponent implements OnInit {
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS_IN_MS = 20_000;
     readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
+    readonly E_MAIL_TOOLTIP = 'Kontakt (E-Mail)';
     readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
     readonly ISSUES_TOOLTIP = 'GitHub Issues';
     readonly SOURCE_CODE_TOOLTIP = 'Source Code';
@@ -517,6 +518,10 @@ export class MainCalcComponent implements OnInit {
 
     public openNewTab(url: string): void {
         window.open(url);
+    }
+
+    public openMailTo(): void {
+        window.open("mailto:info@sisosign.de?Subject=Ich bin großer SISOSIGN-Fan :)")
     }
 
     public toggleWasWareWenn(): void {
