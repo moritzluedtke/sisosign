@@ -1,235 +1,32 @@
-<!--    Global Shortcuts -->
-<div (window:keydown.s)="openSettingsDialog(false)"></div>
-<div (window:keydown.e)="jetztEinstempeln()" *ngIf="!isEinstempelverhaltenAutomatic()"></div>
-<div (window:keydown.w)="toggleWasWareWenn()"></div>
-
 <div fxLayout="row" fxLayoutGap="48px" fxLayoutAlign="center top">
     <!--    Sollarbeitszeit -->
-    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
-        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Sollarbeitszeit</h2>
+    <mat-card class="mat-elevation-z20" style="width: 600px; padding: 36px">
+        <h1 fxLayoutAlign="center" style="margin-bottom: 36px;">Information</h1>
 
-        <div fxLayout="row"
-             fxLayoutAlign="center" style="margin: 16px 0;">
-            <mat-form-field style=" max-width: 144px">
-                <input matInput
-                       type="time"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="einstempelzeitInput"
-                       style="font-size: 1.4em;"
-                       placeholder="Eingestempelt um">
-            </mat-form-field>
-            <button mat-raised-button color="accent" (click)="jetztEinstempeln()"
-                    [disabled]="isEinstempelverhaltenAutomatic()"
-                    matTooltip="{{ JETZT_EINSTEMPELN_TOOLTIP }}"
-                    style="min-width: 30px; max-height: 42px; padding: 2px; margin-top: 8px; margin-left: 8px">
-                <mat-icon>login</mat-icon>
-            </button>
-        </div>
+        <p>
+            Hallo SISOSIGN-Fans,
+        </p>
+        <p>
+            danke, dass du SISOSIGN aktiv nutzt!
+        </p>
+        <p>
+            Bisher wurde SISOSIGN bei Heroku.com gehostet, in einem kostenfreien Tarif. Da Heroku.com
+            diesen Tarif aber leider Ende Oktober einstellt, muss SISOSIGN nun umziehen.
+        </p>
+        <p>
+            Aber bange nicht lieber SISOSIGN-Fan, denn der Umzug ist bereits erfolgreich abgeschlossen.
+            Ab jetzt und bis in die Unendlichkeit (und noch viel weiter) kannst du SISOSIGN
+            unter der folgenden URL erreichen:
+        </p>
+        <a fxLayoutAlign="center" style="font-size: 1.6em" href="https://sisosign.de">sisosign.de</a>
+        <p>
+            Bitte aktualisiere deinen Bookmark für SISOSIGN, damit du zukünftig immer auf der richtigen Seite landest!
+        </p>
+        <p style="font-size: 1.2em">
+            <b>Diese SISOSIGN-Instanz wird Ende Oktober abgeschaltet.</b>
+        </p>
 
-
-        <div *ngIf="areSollarbeitszeitenBerechnet"
-             fxLayoutAlign="center center"
-             fxLayout="column">
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">6h erreicht:</label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ sixHourWorkingLabel }}</label>
-                </div>
-            </div>
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">
-                        <span style="margin-right: 4px">{{regelarbeitszeitNetto.getHours()}}h</span>
-                        <span *ngIf="regelarbeitszeitNetto.getMinutes() !== 0"
-                              style="margin-right: 4px">
-                            {{regelarbeitszeitNetto.getMinutes()}}m
-                        </span>
-                        <span>erreicht:</span>
-                    </label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ regelarbeitszeitLabel }}</label>
-                </div>
-            </div>
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">8h erreicht:</label>
-                    <label fxLayoutAlign="center" class="mat-h2">
-                        {{ eightHourWorkingLabel }}
-                    </label>
-                </div>
-            </div>
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">10h erreicht:</label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2"
-                           style="color: #F00; margin-bottom: 0">
-                        {{ tenHourWorkingLabel }}
-                    </label>
-                </div>
-            </div>
-        </div>
-    </mat-card>
-
-    <!--    Nettoarbeitszeit -->
-    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
-        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Nettoarbeitszeit</h2>
-
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <mat-form-field>
-                <input matInput
-                       type="time"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="einstempelzeitInput"
-                       style="font-size: 1.4em"
-                       placeholder="Eingestempelt um">
-            </mat-form-field>
-        </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <mat-form-field>
-                <input matInput
-                       type="time"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="ausstempelzeitInput"
-                       [disabled]="isJetztOptionActivated"
-                       style="font-size: 1.4em"
-                       placeholder="Ausgestempelt um">
-            </mat-form-field>
-        </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center"
-             style="top: -12px; position: relative">
-            <mat-checkbox [(ngModel)]="isJetztOptionActivated"
-                          (click)="handleJetztOption()"
-                          (keydown.space)="handleJetztOption()">
-                Jetzt?
-            </mat-checkbox>
-        </div>
-
-        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
-             style="margin-top: 16px">
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
-                </div>
-            </div>
-
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
-                        {{ tendenz.richtung }} {{ tendenzLabel }}
-                    </label>
-                </div>
-            </div>
-        </div>
-    </mat-card>
-
-    <!--    WWW-Rechner -->
-    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px" *ngIf="isWasWaereWennActivated">
-        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Was wäre wenn?</h2>
-
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <mat-form-field>
-                <input matInput
-                       type="time"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="wasWaereWennEinstempelzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Eingestempelt um">
-            </mat-form-field>
-        </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <mat-form-field>
-                <input matInput
-                       type="time"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="wasWaereWennAusstempelzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Ausgestempelt um">
-            </mat-form-field>
-        </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
-            <mat-form-field>
-                <input matInput
-                       type="number"
-                       autocomplete="off"
-                       (input)="handleUserInputKeyPress()"
-                       [(ngModel)]="wasWaereWennPausenzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Pausenlänge (in Min.)">
-            </mat-form-field>
-        </div>
-
-        <div fxLayout="column" *ngIf="isWasWaereWennNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
-             style="margin-top: 16px">
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ wasWaereWennNettoArbeitszeitLabel }}</label>
-                    <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
-                              *ngIf="wasWaereWennShowHelpForZeroNettoarbeitszeit"
-                              matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP }}">
-                        help_outline
-                    </mat-icon>
-                </div>
-            </div>
-
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
-                        {{ wasWaereWennTendenz.richtung }} {{ wasWaereWennTendenzLabel }}
-                    </label>
-                </div>
-            </div>
-        </div>
     </mat-card>
 
 </div>
 
-<eco-fab-speed-dial class="custom-fab-button">
-    <eco-fab-speed-dial-trigger>
-        <button mat-fab>
-            <mat-icon>more_horiz</mat-icon>
-        </button>
-    </eco-fab-speed-dial-trigger>
-
-    <eco-fab-speed-dial-actions>
-        <button mat-mini-fab (click)="openSettingsDialog(false)" color="primary"
-                matTooltip="{{ EINSTELLUNGEN_TOOLTIP }}">
-            <mat-icon>settings</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary"
-                matTooltip="{{ SOURCE_CODE_TOOLTIP }}" (click)="openNewTab(SOURCE_CODE_URL)">
-            <mat-icon>code</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary"
-                matTooltip="{{ ISSUES_TOOLTIP }}" (click)="openNewTab(ISSUES_URL)">
-            <mat-icon>assignment_late</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary"
-                matTooltip="{{ RELEASE_NOTES_TOOLTIP }}" (click)="openNewTab(RELEASE_NOTE_URL)">
-            <mat-icon>notes</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary"
-                matTooltip="{{ WAS_WAERE_WENN_TOOLTIP }}" (click)="toggleWasWareWenn()">
-            <mat-icon *ngIf="!isWasWaereWennActivated">add</mat-icon>
-            <mat-icon *ngIf="isWasWaereWennActivated">remove</mat-icon>
-        </button>
-    </eco-fab-speed-dial-actions>
-</eco-fab-speed-dial>
