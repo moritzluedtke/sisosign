@@ -5,23 +5,24 @@ import { Util } from '../../util/util.component';
 import { TimeUtil } from '../../util/time-util.component';
 import { Pausenregelung } from '../../model/pausenregelung.model';
 import { Einstempelverhalten } from '../../model/einstempelverhalten.model';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-settings-dialog',
     templateUrl: './settings-dialog.component.html',
-    styleUrls: [ './settings-dialog.component.scss' ]
+    styleUrls: [ './settings-dialog.component.scss' ],
 })
 export class SettingsDialogComponent implements OnInit {
-    taeglicheArbeitszeitInput: string;
     taeglicheArbeitszeit: string;
-    pausenlaenge: string;
     einstempelZurueckdatierungInMinuten: string;
     firstTime: boolean;
     isJetztOptionActivatedByDefault: boolean;
-    selectedPausenregelung: string;
+    selectedPausenregelung: Pausenregelung;
     selectedEinstempelVerhalten: string;
     lowerArbeitszeitLimit = TimeUtil.parseRawTime('06:00');
     upperArbeitszeitLimit = TimeUtil.parseRawTime('10:00');
+    pausenlaengeFormFieldControl: FormControl;
+    taeglicheArbeitszeitFormFieldControl: FormControl;
 
     constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -29,18 +30,35 @@ export class SettingsDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.pausenlaengeFormFieldControl = new FormControl('', [ Validators.required ]);
+        this.taeglicheArbeitszeitFormFieldControl = new FormControl('', [ Validators.required ]);
+        if (this.firstTime) {
+            this.pausenlaengeFormFieldControl.markAsTouched();
+            this.taeglicheArbeitszeitFormFieldControl.markAsTouched();
+        }
+
         this.taeglicheArbeitszeit = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
-        this.taeglicheArbeitszeitInput = this.taeglicheArbeitszeit;
-        this.pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
+        this.taeglicheArbeitszeitFormFieldControl.setValue(this.taeglicheArbeitszeit);
+        this.pausenlaengeFormFieldControl.setValue(JSON.parse(localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY)));
         this.selectedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
         this.selectedEinstempelVerhalten = Einstempelverhalten[localStorage.getItem(LocalStorageKeys.EINSTEMEPELVERHALTEN)];
         this.isJetztOptionActivatedByDefault = JSON.parse(localStorage.getItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY));
         this.einstempelZurueckdatierungInMinuten = localStorage.getItem(LocalStorageKeys.EINSTEMPEL_ZURUECKDATIERUNG_IN_MINUTEN_KEY);
     }
 
+    public onPausenregelungChange() {
+        this.pausenlaengeFormFieldControl.markAsTouched();
+
+        if (this.selectedPausenregelung == 'LAW') {
+            this.pausenlaengeFormFieldControl.disable()
+        } else {
+            this.pausenlaengeFormFieldControl.enable()
+        }
+    }
+
     public saveAndClose() {
-        localStorage.setItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY, this.taeglicheArbeitszeit);
-        localStorage.setItem(LocalStorageKeys.PAUSENLAENGE_KEY, this.pausenlaenge);
+        localStorage.setItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY, String(this.taeglicheArbeitszeit));
+        localStorage.setItem(LocalStorageKeys.PAUSENLAENGE_KEY, String(this.pausenlaengeFormFieldControl.value));
         localStorage.setItem(LocalStorageKeys.JETZT_OPTION_ACTIVATED_BY_DEFAULT_KEY, String(this.isJetztOptionActivatedByDefault));
         localStorage.setItem(LocalStorageKeys.PAUSENREGELUNG_KEY, String(this.selectedPausenregelung));
         localStorage.setItem(LocalStorageKeys.EINSTEMEPELVERHALTEN, String(this.selectedEinstempelVerhalten));
@@ -50,19 +68,20 @@ export class SettingsDialogComponent implements OnInit {
     }
 
     public isAnyInputInvalid(): boolean {
-        return Util.isEmpty(this.taeglicheArbeitszeitInput) || Util.isEmpty(this.pausenlaenge);
+        return Util.isEmpty(this.taeglicheArbeitszeitFormFieldControl.value)
+            || (Util.isEmpty(this.pausenlaengeFormFieldControl.value) && this.selectedPausenregelung === Pausenregelung.CLASSIC);
     }
 
     public checkForIllegalArbeitszeitInput() {
         const oldValue = this.taeglicheArbeitszeit;
-        const newValue = this.taeglicheArbeitszeitInput;
+        const newValue = this.taeglicheArbeitszeitFormFieldControl.value;
 
         const newTime = TimeUtil.parseRawTime(newValue);
 
         if (TimeUtil.isABeforeOrEqualToB(newTime, this.lowerArbeitszeitLimit) || TimeUtil.isAAfterB(newTime, this.upperArbeitszeitLimit)) {
-            this.taeglicheArbeitszeitInput = oldValue;
+            this.taeglicheArbeitszeitFormFieldControl.setValue(oldValue);
         } else {
-            this.taeglicheArbeitszeit = this.taeglicheArbeitszeitInput;
+            this.taeglicheArbeitszeit = this.taeglicheArbeitszeitFormFieldControl.value;
         }
     }
 

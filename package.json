@@ -1,10 +1,9 @@
 {
   "name": "sisosign",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "scripts": {
     "ng": "ng",
     "clean": "rimraf ./dist",
-    "start": "node server.js",
     "build": "ng build -c prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -26,7 +25,7 @@
     "@angular/platform-browser": "13.2.2",
     "@angular/platform-browser-dynamic": "13.2.2",
     "@angular/router": "13.2.2",
-    "@ecodev/fab-speed-dial": "^9.0.0",
+    "@ecodev/fab-speed-dial": "10.0.0",
     "express": "4.17.2",
     "rxjs": "7.5.4",
     "tslib": "2.3.1"
@@ -44,7 +43,7 @@
     "typescript": "4.5.5"
   },
   "engines": {
-    "node": "v16.14.0",
-    "npm": "8.3.1"
+    "node": "v18.9.1",
+    "npm": "8.19.1"
   }
 }

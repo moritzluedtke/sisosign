@@ -1,0 +1,61 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+jobs:
+  build-project:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18.9.1 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Lint & build the app
+        run: |
+          npm ci
+          npm run build:ci
+      - name: Upload artifact
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v3
+        with:
+          name: webapp-artifact
+          path: dist/SISOSIGN/**
+
+  deploy-on-github-pages:
+    runs-on: ubuntu-latest
+    needs: build-project
+    if: github.ref == 'refs/heads/master'
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v1
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: webapp-artifact
+          path: dist/
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: dist/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

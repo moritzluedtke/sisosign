@@ -14,7 +14,7 @@ import { Einstempelverhalten } from '../../model/einstempelverhalten.model';
 @Component({
     selector: 'app-main-calc',
     templateUrl: './main-calc.component.html',
-    styleUrls: [ './main-calc.component.scss' ]
+    styleUrls: [ './main-calc.component.scss' ],
 })
 export class MainCalcComponent implements OnInit {
 
@@ -30,6 +30,7 @@ export class MainCalcComponent implements OnInit {
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS_IN_MS = 20_000;
     readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
+    readonly E_MAIL_TOOLTIP = 'Kontakt (E-Mail)';
     readonly RELEASE_NOTES_TOOLTIP = 'Release Notes';
     readonly ISSUES_TOOLTIP = 'GitHub Issues';
     readonly SOURCE_CODE_TOOLTIP = 'Source Code';
@@ -396,7 +397,7 @@ export class MainCalcComponent implements OnInit {
             const dialogRef = this.dialog.open(SettingsDialogComponent, {
                 width: this.SETTINGS_DIALOG_WIDTH,
                 data: { firstTime },
-                disableClose: firstTime
+                disableClose: firstTime,
             });
             dialogRef.afterClosed().subscribe(() => {
                 this.areSettingsOpened = false;
@@ -422,7 +423,7 @@ export class MainCalcComponent implements OnInit {
     }
 
     public loadDefaultValuesFromLocalStorage(): boolean {
-        const pausenlaenge = localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY);
+        const pausenlaenge = JSON.parse(localStorage.getItem(LocalStorageKeys.PAUSENLAENGE_KEY));
         const savedPausenregelung = Pausenregelung[localStorage.getItem(LocalStorageKeys.PAUSENREGELUNG_KEY)];
         const taeglicheArbeitszeitString = localStorage.getItem(LocalStorageKeys.TAEGLICHE_ARBEITSZEIT_KEY);
 
@@ -438,8 +439,12 @@ export class MainCalcComponent implements OnInit {
             this.selectedPausenregelung = savedPausenregelung;
         }
 
-        if (Util.isNotEmpty(pausenlaenge)
-            && Util.isNotEmpty(taeglicheArbeitszeitString)) {
+        if ((this.selectedPausenregelung === Pausenregelung.CLASSIC
+                && Util.isNotEmpty(pausenlaenge)
+                && Util.isNotEmpty(taeglicheArbeitszeitString))
+            || (this.selectedPausenregelung === Pausenregelung.LAW
+                && Util.isNotEmpty(taeglicheArbeitszeitString))
+        ) {
             this.pausenlaengeInMinutes = Number(pausenlaenge);
             this.updateRegelarbeitszeit(taeglicheArbeitszeitString);
 
@@ -481,7 +486,7 @@ export class MainCalcComponent implements OnInit {
 
         if (this.selectedEinstempelverhalten === Einstempelverhalten.AUTOMATIC
             && TimeUtil.isNotToday(new Date(lastUpdateOnEinstempelzeit))) {
-                this.setEinstempelzeitToNow();
+            this.setEinstempelzeitToNow();
         }
     }
 
@@ -517,6 +522,10 @@ export class MainCalcComponent implements OnInit {
 
     public openNewTab(url: string): void {
         window.open(url);
+    }
+
+    public openMailTo(): void {
+        window.open("mailto:info@sisosign.de?Subject=Ich bin großer SISOSIGN-Fan :)")
     }
 
     public toggleWasWareWenn(): void {

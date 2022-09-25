@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "SISOSIG": {
+    "SISOSIGN": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/SISOSIG",
+            "outputPath": "dist/SISOSIGN",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -59,7 +59,12 @@
               ]
             },
             "local": {
-              "optimization": false
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "prod"
@@ -68,10 +73,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "local": {
-              "browserTarget": "SISOSIG:build:local"
+              "browserTarget": "SISOSIGN:build:local"
             },
             "prod": {
-              "browserTarget": "SISOSIG:build:prod"
+              "browserTarget": "SISOSIGN:build:prod"
             }
           },
           "defaultConfiguration": "local"
@@ -79,7 +84,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "SISOSIG:build"
+            "browserTarget": "SISOSIGN:build"
           }
         },
         "test": {
@@ -116,16 +121,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "SISOSIG:serve:local"
+            "devServerTarget": "SISOSIGN:serve:local"
           },
           "configurations": {
             "prod": {
-              "devServerTarget": "SISOSIG:serve:prod"
+              "devServerTarget": "SISOSIGN:serve:prod"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "SISOSIG"
+  "defaultProject": "SISOSIGN"
 }
