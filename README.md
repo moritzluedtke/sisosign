@@ -9,6 +9,7 @@ Enjoy it in its full glory [right here](https://sisosign.de/).
 ![SISOSIGN Screenshot](./readme-content/SISOSIGN-Screenshot.png "SISOSIGN Screenshot")
 
 ## Local Development
+
 - `npm run serve` or `ng serve` runs it locally
 
 ### Update Angular Version via Angular CLI
