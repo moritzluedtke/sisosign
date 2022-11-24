@@ -5,7 +5,7 @@ import { Util } from '../../util/util.component';
 import { TimeUtil } from '../../util/time-util.component';
 import { Pausenregelung } from '../../model/pausenregelung.model';
 import { Einstempelverhalten } from '../../model/einstempelverhalten.model';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-settings-dialog',
@@ -21,8 +21,8 @@ export class SettingsDialogComponent implements OnInit {
     selectedEinstempelVerhalten: string;
     lowerArbeitszeitLimit = TimeUtil.parseRawTime('06:00');
     upperArbeitszeitLimit = TimeUtil.parseRawTime('10:00');
-    pausenlaengeFormFieldControl: FormControl;
-    taeglicheArbeitszeitFormFieldControl: FormControl;
+    pausenlaengeFormFieldControl: UntypedFormControl;
+    taeglicheArbeitszeitFormFieldControl: UntypedFormControl;
 
     constructor(public dialogRef: MatDialogRef<SettingsDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -30,8 +30,8 @@ export class SettingsDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.pausenlaengeFormFieldControl = new FormControl('', [ Validators.required ]);
-        this.taeglicheArbeitszeitFormFieldControl = new FormControl('', [ Validators.required ]);
+        this.pausenlaengeFormFieldControl = new UntypedFormControl('', [ Validators.required ]);
+        this.taeglicheArbeitszeitFormFieldControl = new UntypedFormControl('', [ Validators.required ]);
         if (this.firstTime) {
             this.pausenlaengeFormFieldControl.markAsTouched();
             this.taeglicheArbeitszeitFormFieldControl.markAsTouched();
