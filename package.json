@@ -26,7 +26,7 @@
     "@angular/platform-browser-dynamic": "13.2.2",
     "@angular/router": "13.2.2",
     "@ecodev/fab-speed-dial": "10.0.0",
-    "express": "4.17.2",
+    "express": "4.18.2",
     "rxjs": "7.5.4",
     "tslib": "2.3.1"
   },
