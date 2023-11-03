@@ -2,14 +2,14 @@ import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 import { Richtung, Tendenz } from '../../model/tendenz.model';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
 import { Util } from '../../util/util.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppVersionService } from '../../service/app-version.service';
 import { Pausenregelung } from '../../model/pausenregelung.model';
 import { TimeUtil } from '../../util/time-util.component';
 import { Einstempelverhalten } from '../../model/einstempelverhalten.model';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-main-calc',
@@ -26,7 +26,7 @@ export class MainCalcComponent implements OnInit {
         'Die Release Notes sind im Menü verlinkt.\n' +
         'Viel Spaß mit der neuen Version :)';
     readonly SNACKBAR_NEW_VERSION_RELEASED_BUTTON_TEXT = 'Cool!';
-    readonly SETTINGS_DIALOG_WIDTH = '500px';
+    readonly SETTINGS_DIALOG_WIDTH = '600px';
     readonly TIME_SPLIT_SEPARATOR = ':00 GMT';
     readonly TWENTY_SECONDS_IN_MS = 20_000;
     readonly EINSTELLUNGEN_TOOLTIP = 'Einstellungen';
@@ -96,6 +96,7 @@ export class MainCalcComponent implements OnInit {
                 public appVersionService: AppVersionService,
                 private appRef: ApplicationRef) {
         this.showNewVersionSnackbar();
+        this.openSettingsDialog(false);
 
         if (this.loadDefaultValuesFromLocalStorage()) {
             this.berechneEverything();

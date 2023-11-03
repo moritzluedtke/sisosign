@@ -1,75 +1,84 @@
-<div class="mat-typography">
-    <h2 style="margin-bottom: 28px; margin-top: 6px; font-size: 1.9em" fxLayoutAlign="center">
+<div class="mat-typography" style="padding: 1em">
+    <h2 style="margin-bottom: 28px; margin-top: 18px; font-size: 1.9em" class="center-horizontal">
         Einstellungen
     </h2>
-
+    
     <div [ngSwitch]="firstTime">
-        <div *ngSwitchCase="true" fxLayout="column" fxLayoutGap="24px">
+        <div *ngSwitchCase="true" class="column gap-24px">
             <label>Bitte gib deine tägliche Arbeitszeit und Pausenlänge an.</label>
-            <div fxLayoutAlign="center">
+            <div class="center-horizontal">
                 <button mat-raised-button color="accent" (click)="firstTime = false">Okay!</button>
             </div>
         </div>
-
-        <div fxLayout="column" style="margin: 16px 16px 0 16px" *ngSwitchCase="false" fxLayoutGap="12px">
-            <mat-form-field style="max-width: 200px" fxLayoutAlign="center">
-                <input matInput
-                       type="time"
-                       [formControl]="taeglicheArbeitszeitFormFieldControl"
-                       style="font-size: 1.4em"
-                       (change)="checkForIllegalArbeitszeitInput()"
-                       placeholder="Tägliche Arbeitszeit (hh:mm)">
-                <mat-hint>6:00h bis 9:59h möglich</mat-hint>
-            </mat-form-field>
-
-            <div>
-                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault" fxLayoutAlign="center">
+        
+        <div style="margin: 16px 16px 0 16px" *ngSwitchCase="false">
+            <div class="center-horizontal">
+                <mat-form-field style="max-width: 200px">
+                    <mat-label>Tägliche Arbeitszeit (hh:mm)</mat-label>
+                    <input matInput
+                           type="time"
+                           [formControl]="taeglicheArbeitszeitFormFieldControl"
+                           style="font-size: 1em"
+                           (change)="checkForIllegalArbeitszeitInput()">
+                    <mat-hint>6:00h bis 9:59h möglich</mat-hint>
+                </mat-form-field>
+            </div>
+            <div class="center-horizontal">
+                <mat-checkbox [(ngModel)]="isJetztOptionActivatedByDefault">
                     Jetzt-Option standardmäßig aktivieren
                 </mat-checkbox>
             </div>
-
-            <div fxLayout="row">
+            
+            <div class="row">
                 <div>
                     <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Pausenregelung</p>
-
-                    <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung" (change)="onPausenregelungChange()">
+                    
+                    <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedPausenregelung"
+                                     (change)="onPausenregelungChange()">
                         <mat-radio-button class="custom-radio-button" style="max-width: 200px" value="LAW">
                             Mindestlänge nach gesetzlicher Regelung
                         </mat-radio-button>
-                        <mat-radio-button class="custom-radio-button" value="CLASSIC">
-                            <mat-label style="margin-bottom: 12px;">Classic</mat-label>
-                            <mat-form-field>
-                                <input matInput
-                                       type="number"
-                                       [formControl]="pausenlaengeFormFieldControl"
-                                       (keyup.enter)="saveAndClose()"
-                                       style="font-size: 1.4em; margin-top: 2px;"
-                                       placeholder="Pausenlänge (in Min.)">
-                            </mat-form-field>
+                        <mat-radio-button class="custom-radio-button" value="CLASSIC" style="position: relative; top: -2em;">
+                            <div style="position: relative; top: 40px">
+                                <mat-label>Classic</mat-label>
+                                <mat-form-field style="width: 11em; position: relative; top: 0.3em">
+                                    <mat-label style="font-size: 0.85em">Pausenlänge (in Min.)</mat-label>
+                                    <input matInput
+                                           type="number"
+                                           [formControl]="pausenlaengeFormFieldControl"
+                                           (keyup.enter)="saveAndClose()"
+                                           style="font-size: 1em;">
+                                </mat-form-field>
+                            </div>
                         </mat-radio-button>
                     </mat-radio-group>
                 </div>
-
+                
                 <div>
                     <p style="font-weight: bold; margin-bottom: 12px; margin-top: 10px">Einstempeln</p>
-
+                    
                     <mat-radio-group class="custom-radio-group" [(ngModel)]="selectedEinstempelVerhalten">
-                        <mat-radio-button class="custom-radio-button" value="AUTOMATIC">Automatisch</mat-radio-button>
+                        <mat-radio-button class="custom-radio-button" value="AUTOMATIC" style="position: relative; top: -32px">
+                            <div style="position: relative; top: 40px">
+                                <mat-label>Automatisch</mat-label>
+                                <mat-form-field style="position: relative; top: 0.3em; width: 12em">
+                                    <mat-label style="font-size: 0.9em">Zurückdatieren um (in Min.)</mat-label>
+                                    <input matInput
+                                           type="number"
+                                           [(ngModel)]="einstempelZurueckdatierungInMinuten"
+                                           (keyup.enter)="saveAndClose()"
+                                           style="font-size: 1em; margin-top: 2px">
+                                </mat-form-field>
+                            </div>
+                        </mat-radio-button>
                         <mat-radio-button class="custom-radio-button" value="MANUAL">Manuell</mat-radio-button>
                     </mat-radio-group>
-
-                    <mat-form-field>
-                        <input matInput
-                               type="number"
-                               [(ngModel)]="einstempelZurueckdatierungInMinuten"
-                               (keyup.enter)="saveAndClose()"
-                               style="font-size: 1.4em; margin-top: 2px"
-                               placeholder="Zurückdatieren um (in Min.)">
-                    </mat-form-field>
+                
+                
                 </div>
             </div>
-
-            <div fxLayoutAlign="center">
+            
+            <div class="center-horizontal">
                 <button mat-raised-button
                         (click)="saveAndClose()"
                         [disabled]="isAnyInputInvalid()"
@@ -78,7 +87,7 @@
                     Speichern
                 </button>
             </div>
-
+            
             <label style="font-size: 12px; margin-top: 20px; color: darkgrey">
                 <i>Deine hier eingegebenen Daten werden ausschließlich lokal im Browser gespeichert und sind frei von personenbezogenen
                     Daten.</i>

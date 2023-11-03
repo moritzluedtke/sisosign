@@ -3,44 +3,41 @@
 <div (window:keydown.e)="jetztEinstempeln()" *ngIf="!isEinstempelverhaltenAutomatic()"></div>
 <div (window:keydown.w)="toggleWasWareWenn()"></div>
 
-<div fxLayout="row" fxLayoutGap="48px" fxLayoutAlign="center top">
+<div class="row gap-48px center-horizontal mat-typography">
     <!--    Sollarbeitszeit -->
-    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
-        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Sollarbeitszeit</h2>
+    <mat-card class="mat-elevation-z20" style="width: 265px; padding: 36px">
+        <h2 class="center-horizontal" style="margin-bottom: 36px;">Sollarbeitszeit</h2>
 
-        <div fxLayout="row"
-             fxLayoutAlign="center" style="margin: 16px 0;">
+        <div class="center-horizontal row">
             <mat-form-field style=" max-width: 144px">
+                <mat-label>Eingestempelt um</mat-label>
                 <input matInput
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
                        [(ngModel)]="einstempelzeitInput"
-                       style="font-size: 1.4em;"
-                       placeholder="Eingestempelt um">
+                       style="font-size: 1.1em;">
             </mat-form-field>
             <button mat-raised-button color="accent" (click)="jetztEinstempeln()"
                     [disabled]="isEinstempelverhaltenAutomatic()"
                     matTooltip="{{ JETZT_EINSTEMPELN_TOOLTIP }}"
                     style="min-width: 30px; max-height: 42px; padding: 2px; margin-top: 8px; margin-left: 8px">
-                <mat-icon>login</mat-icon>
+                <mat-icon class="center-icon-in-mat-icon">login</mat-icon>
             </button>
         </div>
 
 
         <div *ngIf="areSollarbeitszeitenBerechnet"
-             fxLayoutAlign="center center"
-             fxLayout="column">
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">6h erreicht:</label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ sixHourWorkingLabel }}</label>
+             class="center-horizontal center-vertical column">
+            <div class="row">
+                <div class="column">
+                    <label class="center-horizontal">6h erreicht:</label>
+                    <label class="center-horizontal mat-h2">{{ sixHourWorkingLabel }}</label>
                 </div>
             </div>
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">
+            <div class="row">
+                <div class="column">
+                    <label class="center-horizontal">
                         <span style="margin-right: 4px">{{regelarbeitszeitNetto.getHours()}}h</span>
                         <span *ngIf="regelarbeitszeitNetto.getMinutes() !== 0"
                               style="margin-right: 4px">
@@ -48,23 +45,21 @@
                         </span>
                         <span>erreicht:</span>
                     </label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ regelarbeitszeitLabel }}</label>
+                    <label class="center-horizontal mat-h2">{{ regelarbeitszeitLabel }}</label>
                 </div>
             </div>
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">8h erreicht:</label>
-                    <label fxLayoutAlign="center" class="mat-h2">
+            <div class="row">
+                <div class="column">
+                    <label class="center-horizontal">8h erreicht:</label>
+                    <label class="center-horizontal mat-h2">
                         {{ eightHourWorkingLabel }}
                     </label>
                 </div>
             </div>
-            <div fxLayout="row">
-                <div fxLayout="column">
-                    <label fxLayoutAlign="center">10h erreicht:</label>
-                    <label fxLayoutAlign="center"
-                           class="mat-h2"
+            <div class="row">
+                <div class="column">
+                    <label class="center-horizontal">10h erreicht:</label>
+                    <label class="center-horizontal mat-h2"
                            style="color: #F00; margin-bottom: 0">
                         {{ tenHourWorkingLabel }}
                     </label>
@@ -74,36 +69,33 @@
     </mat-card>
 
     <!--    Nettoarbeitszeit -->
-    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px">
-        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Nettoarbeitszeit</h2>
+    <mat-card class="mat-elevation-z20" style="width: 265px; padding: 36px">
+        <h2 class="center-horizontal" style="margin-bottom: 36px;">Nettoarbeitszeit</h2>
 
-        <div fxLayout="row"
-             fxLayoutAlign="center">
+        <div class="row center-horizontal">
             <mat-form-field>
+                <mat-label>Eingestempelt um</mat-label>
                 <input matInput
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
                        [(ngModel)]="einstempelzeitInput"
-                       style="font-size: 1.4em"
-                       placeholder="Eingestempelt um">
+                       style="font-size: 1.1em">
             </mat-form-field>
         </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
+        <div class="row center-horizontal">
             <mat-form-field>
+                <mat-label>Ausgestempelt um</mat-label>
                 <input matInput
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
                        [(ngModel)]="ausstempelzeitInput"
                        [disabled]="isJetztOptionActivated"
-                       style="font-size: 1.4em"
-                       placeholder="Ausgestempelt um">
+                       style="font-size: 1.1em">
             </mat-form-field>
         </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center"
+        <div class="row center-horizontal"
              style="top: -12px; position: relative">
             <mat-checkbox [(ngModel)]="isJetztOptionActivated"
                           (click)="handleJetztOption()"
@@ -112,20 +104,19 @@
             </mat-checkbox>
         </div>
 
-        <div fxLayout="column" *ngIf="isNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
+        <div class="column center-horizontal center-vertical" *ngIf="isNettoArbeitszeitBerechnet"
              style="margin-top: 16px">
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ nettoArbeitszeitLabel }}</label>
+            <div class="column">
+                <label class="center-horizontal">Nettoarbeitszeit:</label>
+                <div class="row center-horizontal gap-6px">
+                    <label class="center-horizontal mat-h2">{{ nettoArbeitszeitLabel }}</label>
                 </div>
             </div>
 
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
+            <div class="column">
+                <label class="center-horizontal">Gleitzeit-Tendenz:</label>
+                <div class="row center-horizontal gap-6px">
+                    <label class="center-horizontal mat-h2" style="left: -8px; position: relative">
                         {{ tendenz.richtung }} {{ tendenzLabel }}
                     </label>
                 </div>
@@ -134,53 +125,49 @@
     </mat-card>
 
     <!--    WWW-Rechner -->
-    <mat-card class="mat-elevation-z20" style="width: 200px; padding: 36px" *ngIf="isWasWaereWennActivated">
-        <h2 fxLayoutAlign="center" style="margin-bottom: 36px;">Was wäre wenn?</h2>
+    <mat-card class="mat-elevation-z20" style="width: 265px; padding: 36px" *ngIf="isWasWaereWennActivated">
+        <h2 class="center-horizontal" style="margin-bottom: 36px;">Was wäre wenn?</h2>
 
-        <div fxLayout="row"
-             fxLayoutAlign="center">
+        <div class="row center-horizontal">
             <mat-form-field>
+                <mat-label>Eingestempelt um</mat-label>
                 <input matInput
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
                        [(ngModel)]="wasWaereWennEinstempelzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Eingestempelt um">
+                       style="font-size: 1.1em">
             </mat-form-field>
         </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
+        <div class="row center-horizontal">
             <mat-form-field>
+                <mat-label>Ausgestempelt um</mat-label>
                 <input matInput
                        type="time"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
                        [(ngModel)]="wasWaereWennAusstempelzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Ausgestempelt um">
+                       style="font-size: 1.1em">
             </mat-form-field>
         </div>
-        <div fxLayout="row"
-             fxLayoutAlign="center">
+        <div class="row center-horizontal">
             <mat-form-field>
+                <mat-label>Pausenlänge (in Min.)</mat-label>
                 <input matInput
                        type="number"
                        autocomplete="off"
                        (input)="handleUserInputKeyPress()"
                        [(ngModel)]="wasWaereWennPausenzeitFromInput"
-                       style="font-size: 1.4em"
-                       placeholder="Pausenlänge (in Min.)">
+                       style="font-size: 1.1em">
             </mat-form-field>
         </div>
 
-        <div fxLayout="column" *ngIf="isWasWaereWennNettoArbeitszeitBerechnet" fxLayoutAlign="center center"
+        <div class="column center-horizontal center-vertical" *ngIf="isWasWaereWennNettoArbeitszeitBerechnet"
              style="margin-top: 16px">
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Nettoarbeitszeit:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center"
-                           class="mat-h2">{{ wasWaereWennNettoArbeitszeitLabel }}</label>
+            <div class="column">
+                <label class="center-horizontal">Nettoarbeitszeit:</label>
+                <div class="row center-horizontal gap-6px">
+                    <label class="center-horizontal mat-h2">{{ wasWaereWennNettoArbeitszeitLabel }}</label>
                     <mat-icon style="padding-top: 4px; color: red; font-size: 1.4em"
                               *ngIf="wasWaereWennShowHelpForZeroNettoarbeitszeit"
                               matTooltip="{{ NETTOARBEITSZEIT_LESS_THAN_LENGTH_OF_PAUSE_TOOLTIP }}">
@@ -189,10 +176,10 @@
                 </div>
             </div>
 
-            <div fxLayout="column">
-                <label fxLayoutAlign="center">Gleitzeit-Tendenz:</label>
-                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="6px">
-                    <label fxLayoutAlign="center" class="mat-h2" style="left: -8px; position: relative">
+            <div class="column">
+                <label class="center-horizontal">Gleitzeit-Tendenz:</label>
+                <div class="row center-horizontal gap-6px">
+                    <label class="center-horizontal mat-h2" style="left: -8px; position: relative">
                         {{ wasWaereWennTendenz.richtung }} {{ wasWaereWennTendenzLabel }}
                     </label>
                 </div>

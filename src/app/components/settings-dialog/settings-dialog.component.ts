@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LocalStorageKeys } from '../../global-constants/local-storage-keys.model';
 import { Util } from '../../util/util.component';
 import { TimeUtil } from '../../util/time-util.component';
 import { Pausenregelung } from '../../model/pausenregelung.model';
 import { Einstempelverhalten } from '../../model/einstempelverhalten.model';
 import { UntypedFormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-settings-dialog',
