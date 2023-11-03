@@ -32,3 +32,96 @@ label.mat-radio-label {
     white-space: normal;
     align-items: normal;
 }
+
+// START Flex
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.center-horizontal {
+    display: flex;
+    justify-content: center;
+}
+
+.start-horizontal {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.end-horizontal {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.center-vertical {
+    display: flex;
+    align-items: center;
+}
+
+.start-vertical {
+    display: flex;
+    align-items: flex-start;
+}
+
+.end-vertical {
+    display: flex;
+    align-items: flex-end;
+}
+
+.gap-0px {
+    display: flex;
+    gap: 0;
+}
+
+.gap-6px {
+    display: flex;
+    gap: 6px;
+}
+
+.gap-8px {
+    display: flex;
+    gap: 8px;
+}
+
+.gap-12px {
+    display: flex;
+    gap: 12px;
+}
+
+.gap-14px {
+    display: flex;
+    gap: 14px;
+}
+
+.gap-16px {
+    display: flex;
+    gap: 16px;
+}
+
+.gap-18px {
+    display: flex;
+    gap: 18px;
+}
+
+.gap-24px {
+    display: flex;
+    gap: 24px;
+}
+
+.gap-32px {
+    display: flex;
+    gap: 32px;
+}
+
+.gap-48px {
+    display: flex;
+    gap: 48px;
+}
+
+// END Flex
